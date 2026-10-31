@@ -4,8 +4,15 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
   "remoteUser": "node",
   "workspaceFolder": "/workspaces/atoyomin",
+  "mounts": [
+    "source=atoyomin-git-credentials,target=/home/node/.config/atoyomin,type=volume"
+  ],
+  "postCreateCommand": "sh .devcontainer/configure-github-git.sh",
   "forwardPorts": [5173],
   "portsAttributes": {
     "5173": {
