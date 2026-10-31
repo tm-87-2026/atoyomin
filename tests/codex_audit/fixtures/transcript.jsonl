@@ -1,0 +1,5 @@
+{"timestamp":"2026-10-31T01:00:00.000Z","type":"session_meta","payload":{"cli_version":"test"}}
+{"timestamp":"2026-10-31T01:00:01.000Z","type":"response_item","payload":{"type":"message","role":"developer","content":[{"type":"input_text","text":"not part of the visible conversation"}]}}
+{"timestamp":"2026-10-31T01:00:02.000Z","type":"event_msg","payload":{"type":"user_message","message":"Please inspect the project."}}
+{"timestamp":"2026-10-31T01:00:03.000Z","type":"event_msg","payload":{"type":"agent_message","message":"I’ll inspect the project first.","phase":"commentary"}}
+{"timestamp":"2026-10-31T01:00:04.000Z","type":"event_msg","payload":{"type":"agent_message","message":"The inspection is complete.","phase":"final_answer"}}
