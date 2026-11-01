@@ -11,6 +11,8 @@ Git操作にはホストのSSH鍵とDev Containersの標準agent転送を利用�
 
 ### Windows＋WSL
 
+ホスト側のログイン設定は、コンテナ接続前の初回セットアップで準備する方針とした（[ADR 0008](../adr/0008-prepare-wsl-ssh-agent-before-opening-dev-container.md)）。自動化用スクリプトは未実装であり、以下は手動の準備手順である。標準転送の検証経緯と起動順序は[検証記録](wsl-ssh-agent-investigation.md)を参照する。
+
 VS CodeでリポジトリをWSLから開く場合は、WSL側でagentが鍵を利用できるようにする。まずWSLターミナルで確認する。
 
 ```sh
