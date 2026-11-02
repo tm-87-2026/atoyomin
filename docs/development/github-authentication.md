@@ -11,30 +11,44 @@ Git操作にはホストのSSH鍵とDev Containersの標準agent転送を利用�
 
 ### Windows＋WSL
 
-ホスト側のログイン設定は、コンテナ接続前の初回セットアップで準備する方針とした（[ADR 0008](../adr/0008-prepare-wsl-ssh-agent-before-opening-dev-container.md)）。自動化用スクリプトは未実装であり、以下は手動の準備手順である。標準転送の検証経緯と起動順序は[検証記録](wsl-ssh-agent-investigation.md)を参照する。
+ホスト側の初回セットアップを、コンテナ接続前に行う（[ADR 0008](../adr/0008-prepare-wsl-ssh-agent-before-opening-dev-container.md)）。標準転送の検証経緯と起動順序は[検証記録](wsl-ssh-agent-investigation.md)を参照する。
 
-VS CodeでリポジトリをWSLから開く場合は、WSL側でagentが鍵を利用できるようにする。まずWSLターミナルで確認する。
-
-```sh
-ssh-add -l
-```
-
-agentに接続できない場合は、そのターミナルで起動する。
+WSLホストにBash、OpenSSHの`ssh-agent`・`ssh-add`・`ssh-keygen`、`flock`が必要である。Ubuntuでは通常利用できる。以下はコンテナ内ではなく、ホスト側のWSLターミナルでリポジトリへ移動して実行する。
 
 ```sh
-eval "$(ssh-agent -s)"
+bash .devcontainer/setup-host-ssh.sh
+bash .devcontainer/add-github-ssh-key.sh
 ```
 
-鍵が読み込まれていなければ追加する。ファイル名は自分の鍵に合わせる。
+初回セットアップは、Bashが優先して読む`~/.bash_profile`、`~/.bash_login`、`~/.profile`のいずれかに共通処理の呼び出しを登録する。通常は`~/.profile`が対象になる。元の設定は表示されたバックアップ先へ保存し、他の設定は保持する。再実行しても呼び出しは重複しない。#28の検証で追加した`env-28 temporary agent test`のブロックは自動で置き換える。
+
+鍵登録コマンドは、標準では`~/.ssh/id_ed25519`と対応する`.pub`ファイルを使う。登録済みなら何もせず、未登録の場合だけ`ssh-add`を実行する。パスフレーズは、この操作中に本人が入力する。別の鍵を使う場合は、その秘密鍵のパスを指定する。
 
 ```sh
-ssh-add ~/.ssh/id_ed25519
-ssh -T git@github.com
+bash .devcontainer/add-github-ssh-key.sh ~/.ssh/github_work
 ```
 
-認証成功メッセージを確認してから、同じWSLターミナルでリポジトリへ移動し `code .` を実行する。すでにVS CodeやWSL側のVS Code Serverが起動していると、新しいagentの環境を引き継がない場合がある。転送できない場合は、Dev Containersのログでagentの検出状況を確認する。VS Codeの既存プロセスが古い環境を利用している場合は、未保存ファイルを保存してVS CodeとWSL側のVS Code Serverを終了し、agentを利用できるWSLターミナルから開き直す。
+agentはWSLホストの`~/.ssh/atoyomin-agent/agent.sock`を使い、既存の別用途のagentとは分離する。新しいBashログイン環境が準備される際に、共通処理がagentを起動・再利用し、接続先を環境変数に設定する。鍵の作成やGitHubへの公開鍵登録は自動では行わない。
 
-WSL再起動後もagentを利用するためのログイン時設定は、上記VS Code公式ガイドを参照する。パスフレーズ付きの鍵は、agentへの追加時に入力を求められることがある。
+初回設定後は、未保存ファイルを保存してVS Codeの全ウィンドウを閉じ、ホスト側のWSLターミナルから開き直す。
+
+```sh
+code --new-window --remote wsl+Ubuntu .
+```
+
+`Ubuntu`は使用するディストリビューション名に合わせる。その後、Dev Containersでコンテナを開き、次節の接続確認を行う。コンテナの設定変更がない場合、Rebuildは不要である。
+
+通常のコンテナ再接続やRebuildでは、agentが保持している鍵を再利用する。WSL再起動などでagentが終了すると鍵の登録は失われるため、同じ鍵登録コマンドをWSLターミナルで実行してからコンテナへ接続する。初回セットアップを繰り返す必要はない。ログイン設定からは対話的な鍵登録を行わない。
+
+共通処理はセットアップ時のリポジトリの絶対パスを参照する。リポジトリを移動した場合は新しい場所から初回セットアップを再実行する。削除した場合、ログイン設定の`BEGIN atoyomin SSH agent`から`END atoyomin SSH agent`までのブロックを削除すれば呼び出しを解除できる。
+
+転送できない場合は、ホスト側で次を確認する。
+
+```sh
+env -u SSH_AUTH_SOCK bash -lic 'printf "SSH_AUTH_SOCK=%s\n" "$SSH_AUTH_SOCK"; ssh-add -l'
+```
+
+鍵が表示されるのに転送されない場合は、Dev Containersのログの`ssh-agent:`の行を確認する。VS Codeが古い環境を保持している場合は、開き直しが必要になる。
 
 ### macOS
 
@@ -42,7 +56,7 @@ WSL再起動後もagentを利用するためのログイン時設定は、上記
 
 ## コンテナからの確認
 
-VS Codeで **Dev Containers: Rebuild and Reopen in Container** を実行する。SSH agentの転送はDev Containersに任せ、独自のソケットマウントや `SSH_AUTH_SOCK` の固定設定は追加しない。
+VS Codeでコンテナを開く。Dockerfileなどの設定変更を反映する場合は **Dev Containers: Rebuild and Reopen in Container** を実行する。SSH agentの転送はDev Containersに任せ、独自のソケットマウントや `SSH_AUTH_SOCK` の固定設定は追加しない。
 
 コンテナ内で次を実行する。
 
