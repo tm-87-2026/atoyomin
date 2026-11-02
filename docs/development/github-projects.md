@@ -24,11 +24,9 @@ set -eu
 umask 077
 read -r -s -p "Projects用fine-grained PAT: " projects_token </dev/tty
 printf "\n"
-pat_tmp=$(mktemp .env.github-projects.XXXXXX)
-trap '\''rm -f "$pat_tmp"'\'' EXIT
-printf "GH_TOKEN=%s\n" "$projects_token" > "$pat_tmp"
-chmod 600 "$pat_tmp"
-mv -f "$pat_tmp" .env.github-projects
+touch .env.github-projects
+chmod 600 .env.github-projects
+printf "GH_TOKEN=%s\n" "$projects_token" > .env.github-projects
 '
 ```
 

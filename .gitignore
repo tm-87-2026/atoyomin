@@ -2,6 +2,5 @@
 __pycache__/
 *.py[cod]
 
-# GitHub Projects PAT and temporary files
+# GitHub Projects PAT
 .env.github-projects
-.env.github-projects.*

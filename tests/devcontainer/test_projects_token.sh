@@ -45,8 +45,7 @@ cmp "$TEST_ARGUMENTS" "$work_dir/expected-arguments"
 ! grep -q github_pat_fake "$work_dir/output"
 # envファイルを差し替えても次の実行で新しいPATを利用する。
 export TEST_EXPECTED_TOKEN=github_pat_updated
-printf 'GH_TOKEN=%s\n' "$TEST_EXPECTED_TOKEN" > "$work_dir/repo/.env.github-projects.new"
-mv "$work_dir/repo/.env.github-projects.new" "$env_file"
+printf 'GH_TOKEN=%s\n' "$TEST_EXPECTED_TOKEN" > "$env_file"
 bash "$runner" api graphql -f 'query={viewer{login}}'
 # コメント・空行・CRLF・末尾改行なしも扱い、呼び出し元のディレクトリに依存しない。
 printf '# comment\r\n\r\nGH_TOKEN=%s' "$TEST_EXPECTED_TOKEN" > "$env_file"
