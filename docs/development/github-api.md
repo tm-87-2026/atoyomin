@@ -27,8 +27,14 @@ gh --version
 | Token name | 用途が分かる名前（例：`atoyomin-dev`） |
 | Resource owner | `tm-87-2026` |
 | Repository access | **Only select repositories**で`atoyomin`を選択 |
-| Organization permissions | **Projects: Read and write** |
-| Repository permissions | **Issues: Read and write**、**Pull requests: Read and write** |
+
+続いて、**Permissions**で権限を追加します。リポジトリと組織の両方に設定が必要です。
+
+1. **Repositories**タブで**Add permissions**を開き、**Issues**と**Pull requests**を追加します。それぞれのアクセス権を**Read and write**にします。
+2. **Organizations**タブに切り替え、**Add permissions**から**Projects**を追加し、アクセス権を**Read and write**にします。
+3. 発行前に、リポジトリ側のIssues・Pull requestsと、組織側のProjectsの3つが、すべて**Read and write**になっていることを確認します。
+
+`atoyomin`を選択しただけではProjectsの権限は付きません。**Organizations側のProjectsも追加してください。** Organizationsタブが表示されない場合は、Resource ownerが自分のアカウントではなく`tm-87-2026`になっているか確認します。
 
 有効期限は組織のポリシーに従って設定します。コードのpush用にContents権限を追加する必要はありません。Projects権限は組織内の特定のProjectだけには限定されません。
 
@@ -77,7 +83,7 @@ bash tools/gh.sh project list --owner tm-87-2026
 | `GitHub API用PATを読み取れません` | 手順3を実行したか、リポジトリ直下に`.env.github`があり、読み取り可能か確認する |
 | `GH_TOKENには引用符なしのfine-grained PATを指定してください`などの形式エラー | 手順3をやり直す。保存形式は引用符なしの`GH_TOKEN=github_pat_...`のみとする |
 | `401`や`Bad credentials` | PATの入力間違い・有効期限・失効を確認し、必要なら再発行して手順3をやり直す |
-| `403`、`404`や権限不足 | Resource owner、対象リポジトリ、手順2の権限、組織の承認状況を確認する |
+| `403`、`404`や権限不足 | Resource owner、対象リポジトリ、手順2の権限（Organizations側のProjectsを含む）、組織の承認状況を確認する |
 
 認証には`bash tools/gh.sh`を使います。コンテナ内で`gh auth login`や`gh auth setup-git`を実行する必要はありません。エラーを相談するときは、PATや`.env.github`の中身を貼らず、実行したコマンドとエラーメッセージを伝えてください。
 
