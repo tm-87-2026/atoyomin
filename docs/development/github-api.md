@@ -1,22 +1,44 @@
-# Dev ContainerからのGitHub API操作
+# Dev ContainerからGitHub APIを使うための初回設定
 
-SSHで扱えないIssue・PR・Projectsの操作は、コンテナ内のGitHub CLI（`gh`）と各メンバーのfine-grained PAT（対象と操作権限を指定できる個人用アクセストークン）で操作する。PATはリポジトリ直下の`.env.github`に`GH_TOKEN=値`の形式で平文保存し、`.gitignore`でGitの追跡対象から除外する。判断案は[ADR 0010](../adr/0010-use-limited-pat-for-github-api.md)を参照する。
+Issue・PR・ProjectsをDev Containerから操作できるようにする手順です。各メンバーが自分のGitHubアカウントでPAT（個人用アクセストークン）を発行し、設定します。Windows＋WSLとmacOSで共通です。
 
-Windows＋WSLではWSL側、macOSではMac側をホストとする。ホストへの`gh`導入やログイン設定の変更は不要で、通常の`code .`やVS Codeからの再接続を利用できる。Gitの取得・pushは今回変更せず、既存の[SSH認証](github-authentication.md)を利用する。Gitの認証もPATに統一するかは、この手順では判断しない。
+一覧を取得できれば初回設定は完了です。その後はCodexに操作を依頼できます。自分でコマンドを実行する場合は[操作例](github-api-operations.md)を参照してください。
 
-## PATの発行と保存
+Gitの取得・pushには別途[SSH認証の設定](github-authentication.md)が必要です。
 
-組織の管理者はfine-grained PATの利用可否・承認要否を確認する。各メンバーはGitHubのSettings → Developer settings → Personal access tokens → Fine-grained tokensからPATを発行する。
+## 1. コンテナを準備する
 
-- Resource owner: `tm-87-2026`。
-- Organization permissions: ProjectsのRead and write。
-- Repository access: Only select repositoriesで`atoyomin`だけを選択する。
-- Repository permissions: IssuesとPull requestsのRead and write。Contentsなどのpush用権限は追加しない。
-- PATは各メンバーが自分のものを発行し、共有しない。
+VS CodeでこのリポジトリをDev Containerとして開きます。以下のコマンドはすべて、**Dev Container内のターミナルで、リポジトリ直下から**実行してください。
 
-Projects権限は特定のProjectだけに限定されない。組織の承認が必要な場合は承認後に接続確認する。
+```sh
+gh --version
+```
 
-リポジトリ直下へ移動して、次を実行する。Windows＋WSLとmacOSのどちらでも利用できるよう、入力処理にはBashを明示する。
+`gh version ...`が表示されれば、次へ進みます。`gh`が見つからない場合は、VS Codeのコマンドパレットで **Dev Containers: Rebuild and Reopen in Container** を実行し、もう一度確認してください。
+
+## 2. 自分のPATを発行する
+
+ブラウザーでGitHubへログインし、右上のプロフィール画像から **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token** を開きます。
+
+次の内容で設定します。
+
+| 項目 | 設定する値 |
+| --- | --- |
+| Token name | 用途が分かる名前（例：`atoyomin-dev`） |
+| Resource owner | `tm-87-2026` |
+| Repository access | **Only select repositories**で`atoyomin`を選択 |
+| Organization permissions | **Projects: Read and write** |
+| Repository permissions | **Issues: Read and write**、**Pull requests: Read and write** |
+
+有効期限は組織のポリシーに従って設定します。コードのpush用にContents権限を追加する必要はありません。Projects権限は組織内の特定のProjectだけには限定されません。
+
+設定後、**Generate token**で発行します。表示されたトークンは次の手順で使います。自分のPATを他のメンバーと共有したり、チャットへ貼り付けたりしないでください。
+
+`tm-87-2026`を選択できない場合や、組織の承認待ちになった場合は、組織の管理者に確認してください。承認が必要な場合、接続確認は承認後に行います。
+
+## 3. PATを保存する
+
+Dev Container内のターミナルに、次のコマンド全体を貼り付けて実行します。既に`.env.github`がある場合は、新しいPATで上書きします。
 
 ```sh
 bash -c '
@@ -31,61 +53,38 @@ printf "GH_TOKEN=%s\n" "$github_token" > .env.github
 '
 ```
 
-PATは非表示の入力欄へ貼り付ける。保存形式は引用符なしの`GH_TOKEN=github_pat_...`とする。空行と`#`で始まるコメント行を除き、この設定だけを記載する。スクリプトは`source`や`eval`を使わず値だけを読む。PATをコマンド引数や履歴に書かない。
+`GitHub API用fine-grained PAT:`と表示されたら、発行したPATを貼り付けてEnterを押します。入力した文字は画面に表示されません。入力待ちが終わり、エラーが出なければ保存は完了です。
 
-これは暗号化された保管ではない。ホストとコンテナ内でファイルへアクセスできる処理はPATを読み取り・書き換えできる。`.gitignore`は誤コミットを減らすためのもので、`git add -f`やフォルダごとのコピーにはPATが含まれ得る。
+PATはリポジトリ直下の`.env.github`に平文で保存されます。このファイルはGitの追跡対象から除外していますが、強制追加やフォルダーごとの共有には含まれ得るため、共有しないでください。
 
-## コンテナからの利用
+## 4. 接続を確認する
 
-コンテナへの`gh`導入を反映する初回は **Dev Containers: Rebuild and Reopen in Container** を実行する。envファイルは通常のワークスペース共有で参照するため、追加のマウントやホスト初期化処理は不要である。PATが未設定でもコンテナは起動でき、GitHub API用コマンドを実行した際に設定不足を通知する。
-
-コンテナで次を実行する。
-
-```sh
-gh --version
-bash tools/gh.sh project list --owner tm-87-2026
-git remote get-url origin
-```
-
-CodexはIssue・PR・ProjectsのAPI操作に`bash tools/gh.sh`を使う。ファイルの読み込みはスクリプトに任せ、PATの表示や手動での環境変数設定は行わない。素の`gh`にはこのファイルのPATは自動供給されない。スクリプトは毎回ファイルを読み直し、起動する`gh`の環境変数だけにPATを渡す。VS Codeの起動方法や起動時の`GH_TOKEN`には依存しない。
-
-初回設定時に各メンバーがPATを発行・保存し、以後の操作は依頼に応じてCodexが行う。Codexはユーザーが依頼した範囲で書き込みを実行し、PATや必要な権限が不足する場合は報告する。
-
-Issue・PRは対象リポジトリを明示して操作する。
+同じターミナルで、次を1つずつ実行します。
 
 ```sh
 bash tools/gh.sh issue list --repo tm-87-2026/atoyomin
-bash tools/gh.sh issue create --repo tm-87-2026/atoyomin --title <タイトル> --body-file <本文ファイル>
-bash tools/gh.sh issue edit <番号> --repo tm-87-2026/atoyomin --body-file <本文ファイル>
 bash tools/gh.sh pr list --repo tm-87-2026/atoyomin
-bash tools/gh.sh pr create --repo tm-87-2026/atoyomin --head <push済みブランチ> --base main --title <タイトル> --body-file <本文ファイル>
-bash tools/gh.sh pr edit <番号> --repo tm-87-2026/atoyomin --body-file <本文ファイル>
+bash tools/gh.sh project list --owner tm-87-2026
 ```
 
-PRの元になるコードは先にSSHでpushする。PATにはコードを送信する権限を追加しない。
+それぞれの一覧が表示されれば設定は完了です。対象がない場合は、項目がない旨の表示でも正常です。これらのコマンドは一覧の取得だけを行い、データを変更しません。作成・編集の確認は、確認用の対象を決めて別途行います。
 
-Projectsは対象の組織とProjectを指定する。実際の書き込み確認は、確認用のIssue・PR・Project項目を使うなど、ユーザーと合意した対象で行う。
+### うまくいかない場合
 
-```sh
-bash tools/gh.sh project view <Project番号> --owner tm-87-2026 --format json
-bash tools/gh.sh project field-list <Project番号> --owner tm-87-2026 --format json
-bash tools/gh.sh project item-list <Project番号> --owner tm-87-2026 --format json
-bash tools/gh.sh project item-add <Project番号> --owner tm-87-2026 --url <IssueのURL>
-bash tools/gh.sh project item-edit --id <項目ID> --project-id <ProjectのID> --field-id <StatusフィールドID> --single-select-option-id <選択肢ID>
-```
+| 症状 | 確認すること |
+| --- | --- |
+| `gh`が見つからない | 手順1のRebuildを実行し、Dev Container内で操作しているか確認する |
+| `GitHub API用PATを読み取れません` | 手順3を実行したか、リポジトリ直下に`.env.github`があり、読み取り可能か確認する |
+| `GH_TOKENには引用符なしのfine-grained PATを指定してください`などの形式エラー | 手順3をやり直す。保存形式は引用符なしの`GH_TOKEN=github_pat_...`のみとする |
+| `401`や`Bad credentials` | PATの入力間違い・有効期限・失効を確認し、必要なら再発行して手順3をやり直す |
+| `403`、`404`や権限不足 | Resource owner、対象リポジトリ、手順2の権限、組織の承認状況を確認する |
 
-IDやオプションは一覧のJSON出力と各コマンドの`--help`で確認する。標準コマンドで足りない情報は`bash tools/gh.sh api ...`のREST APIまたは`bash tools/gh.sh api graphql ...`で補える。APIを変えてもPATの権限は増えない。権限不足時には対象・組織の承認・必要な権限を確認し、一律に権限を広げない。
+認証には`bash tools/gh.sh`を使います。コンテナ内で`gh auth login`や`gh auth setup-git`を実行する必要はありません。エラーを相談するときは、PATや`.env.github`の中身を貼らず、実行したコマンドとエラーメッセージを伝えてください。
 
-スクリプトは`issue`・`pr`・`project`・`api`を受け付けるが、PATの悪用を防ぐ境界はGitHub側の権限設定である。コンテナ内で`gh auth login`や`gh auth setup-git`は実行しない。トークンの表示やデバッグログへの記録も避ける。
+## PATの更新・利用終了
 
-必要な操作を確認するまでは既存プラグインを削除しない。GitHub Appは他の利用者・用途を確認してから別途整理する。
+更新するときは新しいPATを発行し、手順3で保存し直して手順4で確認します。次のコマンド実行から反映されるため、VS Codeの再起動やRebuildは不要です。使わなくなった古いPATはGitHubのFine-grained tokens画面で失効させてください。
 
-## 更新と解除
+利用をやめる場合は、GitHubでPATを失効させ、`.env.github`を削除します。
 
-PATを更新する場合は新しいものを発行し、同じ保存手順でホストのファイルを差し替える。次のコマンド実行で新しいファイルを読む。VS Codeの終了やRebuildは不要である。古いPATはGitHub上で失効する。実行中の処理には既に取得した古いPATが残る。
-
-利用をやめる場合はPATをGitHub上で失効し、`.env.github`を削除する。
-
-Windows＋WSLとmacOSでのRebuild・envファイルの読み取り権限、および実際のIssue・PR・Projectsの取得・作成・編集は、各ホストでの検証が必要である。
-
-以前の手順で`.env.github-projects`を作った場合は、`.env.github`へ名前を変更する。旧名も誤コミット防止のためignore対象として残している。
+認証方式と保存方法を選んだ理由は[ADR 0010](../adr/0010-use-limited-pat-for-github-api.md)に記載しています。
