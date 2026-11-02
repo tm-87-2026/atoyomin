@@ -1,57 +1,56 @@
 #!/usr/bin/env bash
-# 実際のPATを使わず、起動失敗時の遮断と環境変数での受け渡しを検証する。
+# 実際のPATを使わず、ファイルの読み直しとghへの受け渡しを検証する。
 set -euo pipefail
 repo_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
 work_dir=$(mktemp -d)
 trap 'rm -rf "$work_dir"' EXIT
-mkdir -p "$work_dir/repo/.devcontainer" "$work_dir/bin"
-cp "$repo_dir/.devcontainer/open-with-projects-token.sh" "$work_dir/repo/.devcontainer/"
-# テスト用コピーでのみWSLホストを模擬する。
-sed -i "s|/.dockerenv|$work_dir/not-a-container|" "$work_dir/repo/.devcontainer/open-with-projects-token.sh"
-cat > "$work_dir/bin/wslpath" <<'SH'
-#!/usr/bin/env bash
-printf '%s\n' "$2"
-SH
-cat > "$work_dir/bin/powershell.exe" <<'SH'
-#!/usr/bin/env bash
-case "$TEST_TOKEN_MODE" in
-  fail) exit 1 ;;
-  empty) exit 0 ;;
-  invalid) printf 'gho_fake_oauth\n' ;;
-  multiline) printf 'github_pat_fake\nunexpected\n' ;;
-  success) printf 'github_pat_fake\r\n' ;;
-esac
-SH
-cat > "$work_dir/bin/code" <<'SH'
+mkdir -p "$work_dir/bin" "$work_dir/secrets"
+cp "$repo_dir/tools/gh-projects.sh" "$work_dir/gh-projects.sh"
+# テスト用コピーだけマウント先を一時ディレクトリに置き換える。
+sed -i "s|/run/atoyomin-projects/token|$work_dir/secrets/token|" "$work_dir/gh-projects.sh"
+cat > "$work_dir/bin/gh" <<'SH'
 #!/usr/bin/env bash
 set -euo pipefail
-[ "$GH_TOKEN" = github_pat_fake ]
+[ "$GH_TOKEN" = "$TEST_EXPECTED_TOKEN" ]
+[ "$GH_HOST" = github.com ]
 [ -z "${GITHUB_TOKEN:-}" ]
 [ -z "${GH_DEBUG:-}" ]
-[ "$WSLENV" = 'GH_TOKEN:KEEP/p' ]
-[ "$PWD" = "$TEST_PROJECT_DIR" ]
-[ "$#" -eq 2 ] && [ "$1" = --new-window ] && [ "$2" = . ]
-touch "$TEST_LAUNCHED"
+printf '%s\n' "$@" > "$TEST_ARGUMENTS"
+exit "${TEST_GH_STATUS:-0}"
 SH
-chmod +x "$work_dir/bin/"*
-export PATH="$work_dir/bin:$PATH"
-export TEST_PROJECT_DIR="$work_dir/repo" TEST_LAUNCHED="$work_dir/launched"
+chmod +x "$work_dir/bin/gh"
+export PATH="$work_dir/bin:$PATH" TEST_ARGUMENTS="$work_dir/arguments"
 export GH_TOKEN=old_token GITHUB_TOKEN=old_token GH_DEBUG=api
-export WSLENV='KEEP/p:GH_TOKEN/w'
-for TEST_TOKEN_MODE in fail empty invalid multiline; do
-  export TEST_TOKEN_MODE
-  if bash "$work_dir/repo/.devcontainer/open-with-projects-token.sh" > "$work_dir/output" 2>&1; then
-    echo "取得失敗時にVS Codeを起動しました: $TEST_TOKEN_MODE" >&2
+for test_value in missing empty invalid multiline; do
+  rm -f "$work_dir/secrets/token" "$TEST_ARGUMENTS"
+  case "$test_value" in
+    empty) : > "$work_dir/secrets/token" ;;
+    invalid) printf 'export GH_TOKEN=github_pat_fake\n' > "$work_dir/secrets/token" ;;
+    multiline) printf 'github_pat_fake\nunexpected\n' > "$work_dir/secrets/token" ;;
+  esac
+  if bash "$work_dir/gh-projects.sh" project list > "$work_dir/output" 2>&1; then
+    echo "PAT不備を拒否しませんでした: $test_value" >&2
     exit 1
   fi
-  [ ! -e "$TEST_LAUNCHED" ]
+  [ ! -e "$TEST_ARGUMENTS" ]
 done
-export TEST_TOKEN_MODE=success
-# 呼び出し側が-xを指定してもPATはログに出さない。
-bash -x "$work_dir/repo/.devcontainer/open-with-projects-token.sh" > "$work_dir/output" 2>&1
-[ -e "$TEST_LAUNCHED" ]
-if grep -q github_pat_fake "$work_dir/output"; then
-  echo '起動ログにPATが含まれています。' >&2
+export TEST_EXPECTED_TOKEN=github_pat_fake
+printf '%s\n' "$TEST_EXPECTED_TOKEN" > "$work_dir/secrets/token"
+bash -x "$work_dir/gh-projects.sh" project list --owner 'owner with spaces' > "$work_dir/output" 2>&1
+printf 'project\nlist\n--owner\nowner with spaces\n' > "$work_dir/expected-arguments"
+cmp "$TEST_ARGUMENTS" "$work_dir/expected-arguments"
+! grep -q github_pat_fake "$work_dir/output"
+# ホストでファイルを差し替えても次の実行で新しいPATを利用する。
+export TEST_EXPECTED_TOKEN=github_pat_updated
+printf '%s\n' "$TEST_EXPECTED_TOKEN" > "$work_dir/secrets/new-token"
+mv "$work_dir/secrets/new-token" "$work_dir/secrets/token"
+bash "$work_dir/gh-projects.sh" api graphql -f 'query={viewer{login}}'
+if bash "$work_dir/gh-projects.sh" auth login > "$work_dir/output" 2>&1; then
+  echo '認証設定を変更するコマンドを拒否しませんでした。' >&2
   exit 1
 fi
-echo 'Projects token launcher tests passed'
+export TEST_GH_STATUS=7
+test_status=0
+bash "$work_dir/gh-projects.sh" project list || test_status=$?
+[ "$test_status" -eq 7 ]
+echo 'Projects token file tests passed'
