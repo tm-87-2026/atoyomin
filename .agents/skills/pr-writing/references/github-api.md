@@ -1,42 +1,32 @@
 # GitHub APIの参照先
 
+このリポジトリのAPI操作は[GitHub APIの操作手順](../../../../docs/development/github-api.md)に従い、`bash tools/gh.sh`経由でGitHub CLIを利用する。PATを表示せず、ファイルの読み込みはスクリプトに任せる。
+
 ## 利用前の確認
 
-- **接続先**: 依頼のURLまたは `git remote get-url origin` からリポジトリを特定する。番号だけで他のリポジトリを検索しない。
-- **ツール**: GitHubプラグインを優先する。以下の識別名で利用可能なツールを探し、現在の引数定義を確認する。
+- **接続先**: 依頼のURLまたは`git remote get-url origin`からリポジトリを特定する。番号だけで他のリポジトリを検索しない。
 - **操作範囲**: この資料は読み取り用。PR本文の更新やレビュー投稿は、Skill本文の「承認・反映」に従う。
+- **オプション**: インストール済みCLIの各コマンドの`--help`で確認する。
 
-## 読み取りに使うツール
+## 読み取りに使うコマンド
 
-| 確認する情報 | ツール | 引数 |
-| --- | --- | --- |
-| Issueの要求・完了条件 | `mcp__codex_apps__github_fetch_issue` | `repository_full_name`, `issue_number` |
-| PRのタイトル・本文・差分・head SHA | `mcp__codex_apps__github_fetch_pr` | `repo_full_name`, `pr_number` |
-| PRの議論・レビュー | `mcp__codex_apps__github_fetch_pr_comments` | `repo_full_name`, `pr_number` |
-| PR全体のパッチ | `mcp__codex_apps__github_fetch_pr_patch` | `repo_full_name`, `pr_number` |
-| コミットに対応するActionsの実行結果 | `mcp__codex_apps__github_fetch_commit_workflow_runs` | `repo_full_name`, `commit_sha` |
+以下は`bash tools/gh.sh`に続けて指定し、`--repo`には対象の`owner/name`を渡す。
 
-## 呼び出し例
+| 確認する情報 | コマンド |
+| --- | --- |
+| Issueの要求・完了条件 | `issue view <番号> --repo <owner/name>` |
+| PRのタイトル・本文・head SHA | `pr view <番号> --repo <owner/name> --json title,body,headRefOid` |
+| PRの会話・レビュー | `pr view <番号> --repo <owner/name> --comments` |
+| PR全体の差分 | `pr diff <番号> --repo <owner/name>` |
+| PRのチェック結果 | `pr checks <番号> --repo <owner/name>` |
 
-PR #32なら `fetch_pr` に次の引数を渡す。
-
-```json
-{"repo_full_name": "tm-87-2026/atoyomin", "pr_number": 32}
-```
+レビューのインラインコメントなど標準コマンドで足りない情報は、`api`でREST APIまたはGraphQL APIを呼び出して補う。必要なコメントを省略したまま判断しない。
 
 ## 取得結果の確認
 
-- **関連Issue**: 本文などから番号を確認して `fetch_issue` で取得する。
-- **差分**: `fetch_pr` の応答が大きい場合は本文とメタデータを先に確認し、パッチは別途取得する。必要な実装・テストの差分を省略されたまま判断しない。
+- **関連Issue**: PR本文などから番号を確認して取得する。
+- **差分**: 本文とメタデータだけで変更内容を判断せず、実際の差分を確認する。
+- **CI**: 対象のhead SHAと照合する。結果が空でも「検証未実施」と断定しない。Actionsなどの権限不足で取得できない場合は、その旨を示す。
+- **ローカル・実環境の検証**: 実行記録を参照し、過去のPR本文の成功を今回実行した結果として扱わない。
 
-- **CI**: 対象のhead SHAと照合する。`fetch_commit_workflow_runs` はPR起点の実行のみ・最初のページのみを返す。結果が空でも「検証未実施」と断定しない。
-- **ローカル・実環境の検証**: それぞれの実行・確認記録を参照する。過去のPR本文の「成功」を現在の差分の結果として扱わない。
-
-## ツールが使えない場合
-
-| 状況 | 確認方法 |
-| --- | --- |
-| 認証済みのGitHub CLIが使える | `gh pr view`、`gh pr diff`、`gh issue view`、`gh pr checks` で補う。オプションはインストール済みCLIの `--help` で確認する |
-| APIもCLIも使えない | ローカルの差分・共有されたIssueの内容・テスト記録で確認できる範囲を示し、不足する根拠だけ利用者に確認する |
-
-GitのSSH認証とGitHub APIの認証は別に扱う。Git接続の成功だけでAPIも使えると判断しない。取得できない情報を推測で補わない。
+CLIやPATが利用できない場合は、ローカルの差分・共有されたIssue・テスト記録で確認できる範囲と、取得できない情報を示す。GitのSSH接続の成功だけでAPIも利用できると判断しない。

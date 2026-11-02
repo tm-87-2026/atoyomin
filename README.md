@@ -4,3 +4,4 @@
 
 開発には Dev Containers を使用する。GitHub への認証方法は
 [GitHub 認証](docs/development/github-authentication.md)を参照する。
+Issue・PR・Projectsの操作には[GitHub APIの設定手順](docs/development/github-api.md)を利用する。

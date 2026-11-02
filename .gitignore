@@ -1,3 +1,8 @@
 # Python bytecode cache
 __pycache__/
 *.py[cod]
+
+# GitHub API PAT
+.env.github
+# Previously used PAT file
+.env.github-projects

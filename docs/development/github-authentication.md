@@ -91,4 +91,4 @@ PATを発行していた場合は、GitHubで不要なPATを削除する。旧vo
 docker volume rm atoyomin-git-credentials atoyomin-gh-config
 ```
 
-PR作成などGitHub APIを利用するツールの認証は、このGit接続とは別に扱う。
+PR作成などGitHub APIを利用するツールの認証は、このGit接続とは別に扱う。Issue・PR・ProjectsのPAT設定は[GitHub APIの操作](github-api.md)を参照する。
