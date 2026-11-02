@@ -58,9 +58,15 @@ CLI 0.89.0の[設定解決処理](https://github.com/devcontainers/cli/blob/v0.8
 - [WSL Serverの環境設定](https://code.visualstudio.com/docs/remote/wsl#_advanced-environment-setup-script)：`~/.vscode-server/server-env-setup`はVS Code Server起動前の設定用である。拡張ホストの環境取得とは区別する。
 - [過去の類似報告 #3902](https://github.com/microsoft/vscode-remote-release/issues/3902)：WSLのシェル起動設定によりagentを検出できない事例がある。ただし開発者は2022年に環境取得方法を変更したと説明しており、当時の不具合が現在も残る根拠とはしない。
 
-## 実装と残る実機確認
+## 実装後の検証結果
 
-- 初回セットアップ、ログイン時のagent起動・再利用、対話用の鍵登録をスクリプトとして実装済み。一時ホームで実際のagentを使い、再実行、同時起動、停止後の復旧、設定保持、登録済み鍵の再利用を検証した。
-- ホストに追加した診断用の固定パス設定を恒久設定に置き換える。
-- 対話が必要な鍵登録の操作と利用手順は実装・文書化済み。実WSLでのパスフレーズ入力は引き続き利用者による確認が必要。
-- WSL再起動・コンテナ再接続後の再現性と、作業ブランチへのpushを確認する。
+2026-11-02、以下を確認した。
+
+- 初回セットアップ、ログイン時のagent起動・再利用、対話用の鍵登録を実装した。`bash tests/devcontainer/test_host_ssh.sh`で、一時ホームと実際のagentを使い、再実行、同時起動、停止後の復旧、設定保持、登録済み鍵の再利用を検証し、成功した。
+- 利用者がWSLホストで初回セットアップと鍵登録を実行し、パスフレーズ入力を含めて成功を報告した。診断用の一時設定を置き換え、新しいログイン環境でもagentの接続先と登録済み鍵が取得できた。
+- VS Codeを開き直した後、コンテナ内の鍵一覧、GitHub認証、リモート参照取得の成功を利用者が報告した。
+- WSL再起動後、鍵登録前の`ssh-add -l`が`The agent has no identities.`となり、agentの自動起動を確認した。続く鍵登録と、同じコマンドの再実行による登録済み鍵の再利用も利用者が確認した。
+- その後のコンテナRebuild後に、コンテナ内で`ssh-add -l`、`ssh -T git@github.com`、`git ls-remote origin HEAD`を実行し、agentへの接続、GitHub認証、リモート参照取得の成功を確認した。`ssh -T`の終了コード1はGitHubの正常な認証応答である。
+- コンテナ内から作業ブランチ`env/28`へのpushも成功した。
+
+ホスト側の操作は利用者の報告、コンテナ側の最終確認とpushは実行結果に基づく。macOSや他のWSLディストリビューションでの実機検証は行っていない。
