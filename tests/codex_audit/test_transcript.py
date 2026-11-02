@@ -44,6 +44,41 @@ class TranscriptTest(unittest.TestCase):
                 ],
             )
 
+    def test_preserves_split_start_and_mask_on_repeated_updates(self) -> None:
+        """分割前の発言を再追加せず、マスクを保持して後続発言を追記する。"""
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            staging = root / ".codex/audit-staging"
+            staging.mkdir(parents=True)
+            status = staging / "docs-23.status.json"
+            status.write_text(json.dumps({"source_offsets": {"session-1": 1}}))
+            source = root / "source.jsonl"
+            source.write_bytes(FIXTURE.read_bytes())
+            destination = update_branch_audit(
+                repository_root=root, branch="docs/23", session_id="session-1", transcript=source
+            )
+            records = [json.loads(line) for line in destination.read_text().splitlines()]
+            self.assertEqual(len(records), 2)
+            self.assertEqual(records[0]["speaker"], "codex")
+            records[0]["message"] = "[REDACTED]"
+            destination.write_text("".join(json.dumps(row) + "\n" for row in records))
+            before = destination.read_bytes()
+            update_branch_audit(
+                repository_root=root, branch="docs/23", session_id="session-1", transcript=source
+            )
+            self.assertEqual(destination.read_bytes(), before)
+            with source.open("a") as target:
+                target.write(json.dumps({"timestamp": "2026-11-03T00:00:00Z", "type": "event_msg",
+                                         "payload": {"type": "user_message", "message": "Next"}}) + "\n")
+            update_branch_audit(
+                repository_root=root, branch="docs/23", session_id="session-1", transcript=source
+            )
+            records = [json.loads(line) for line in destination.read_text().splitlines()]
+            self.assertEqual(len(records), 3)
+            self.assertEqual(records[0]["message"], "[REDACTED]")
+            self.assertEqual(records[-1]["message"], "Next")
+
     def test_fails_when_conversation_events_are_missing(self) -> None:
         """可視会話がない記録を、正常な空ログとして扱わない。"""
 

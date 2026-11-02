@@ -229,6 +229,15 @@ def _update_locked(destination: Path, staging: Path, branch: str, session: str, 
     if destination.exists():
         messages = [AuditMessage(**json.loads(line)) for line in destination.read_text(encoding="utf-8").splitlines()]
     counts = Counter(item.session_id for item in messages)
+    # 手動でブランチ間の会話を整理した場合は、原本中の開始位置を保持する。
+    status_path = staging / f"{branch}.status.json"
+    previous_status = json.loads(status_path.read_text(encoding="utf-8")) if status_path.exists() else {}
+    source_offsets = previous_status.get("source_offsets", {})
+    if not isinstance(source_offsets, dict) or any(
+        not isinstance(value, int) or isinstance(value, bool) or value < 0
+        for value in source_offsets.values()
+    ):
+        raise TranscriptFormatError("invalid source offsets")
     current = staging / f"{branch}--{session}.jsonl"
     errors = []
     candidates = [path for path in sorted(staging.glob(f"{branch}--*.jsonl"))
@@ -242,9 +251,10 @@ def _update_locked(destination: Path, staging: Path, branch: str, session: str, 
                 previous = list(extract_messages(current, name))
                 if extracted[:len(previous)] != previous:
                     raise TranscriptFormatError("source prefix changed; manual reconciliation required")
-            if len(extracted) < counts[name]:
+            start = source_offsets.get(name, 0) + counts[name]
+            if len(extracted) < start:
                 raise TranscriptFormatError("source contains fewer messages than the public log")
-            messages.extend(extracted[counts[name]:])
+            messages.extend(extracted[start:])
             if path == transcript and path.resolve() != current.resolve():
                 # 原本を公開せず、次回の追記前に変更を検知するため保持する。
                 temporary = current.with_suffix(".tmp")
@@ -259,6 +269,7 @@ def _update_locked(destination: Path, staging: Path, branch: str, session: str, 
         "updated_at": datetime.now(timezone.utc).isoformat(),
         "message_count": len(messages),
         "session_counts": dict(Counter(item.session_id for item in messages)),
+        "source_offsets": source_offsets,
         "latest_message_at": max((item.timestamp for item in messages), default=None),
         "errors": errors,
     }
