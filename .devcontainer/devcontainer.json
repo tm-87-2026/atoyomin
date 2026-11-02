@@ -9,13 +9,6 @@
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
-  "initializeCommand": [
-    "bash", "-c", "umask 077; mkdir -p -- \"$1\"", "--",
-    "${localEnv:HOME}/.config/atoyomin/projects"
-  ],
-  "mounts": [
-    "source=${localEnv:HOME}/.config/atoyomin/projects,target=/run/atoyomin-projects,type=bind,readonly"
-  ],
   "forwardPorts": [
     5173
   ],
