@@ -34,3 +34,4 @@
 | 変更内容 | 参照する規約 |
 | --- | --- |
 | Pythonコードの追加・変更 | [Pythonコードの記述規約](docs/conventions/python-documentation.md) |
+| GitHubのIssue・PR・Projectsの操作 | [GitHub APIの操作手順](docs/development/github-api.md) |

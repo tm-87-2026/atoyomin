@@ -5,9 +5,9 @@ repo_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)
 work_dir=$(mktemp -d)
 trap 'rm -rf "$work_dir"' EXIT
 mkdir -p "$work_dir/bin" "$work_dir/repo/tools"
-cp "$repo_dir/tools/gh-projects.sh" "$work_dir/repo/tools/gh-projects.sh"
-env_file="$work_dir/repo/.env.github-projects"
-runner="$work_dir/repo/tools/gh-projects.sh"
+cp "$repo_dir/tools/gh.sh" "$work_dir/repo/tools/gh.sh"
+env_file="$work_dir/repo/.env.github"
+runner="$work_dir/repo/tools/gh.sh"
 cat > "$work_dir/bin/gh" <<'SH'
 #!/usr/bin/env bash
 set -euo pipefail
@@ -43,6 +43,17 @@ bash -x "$runner" project list --owner 'owner with spaces' > "$work_dir/output" 
 printf 'project\nlist\n--owner\nowner with spaces\n' > "$work_dir/expected-arguments"
 cmp "$TEST_ARGUMENTS" "$work_dir/expected-arguments"
 ! grep -q github_pat_fake "$work_dir/output"
+# Issue・PRの作成・編集とREST APIの引数を変更せずCLIに渡す。
+for api_resource in issue pr; do
+  for operation in create edit; do
+    bash "$runner" "$api_resource" "$operation" --repo owner/repo --body-file 'body with spaces.md'
+    printf '%s\n' "$api_resource" "$operation" --repo owner/repo --body-file 'body with spaces.md' > "$work_dir/expected-arguments"
+    cmp "$TEST_ARGUMENTS" "$work_dir/expected-arguments"
+  done
+done
+bash "$runner" api repos/owner/repo/issues --method GET
+printf 'api\nrepos/owner/repo/issues\n--method\nGET\n' > "$work_dir/expected-arguments"
+cmp "$TEST_ARGUMENTS" "$work_dir/expected-arguments"
 # envファイルを差し替えても次の実行で新しいPATを利用する。
 export TEST_EXPECTED_TOKEN=github_pat_updated
 printf 'GH_TOKEN=%s\n' "$TEST_EXPECTED_TOKEN" > "$env_file"
@@ -58,4 +69,4 @@ export TEST_GH_STATUS=7
 test_status=0
 bash "$runner" project list || test_status=$?
 [ "$test_status" -eq 7 ]
-echo 'Projects env file tests passed'
+echo 'GitHub API env file tests passed'

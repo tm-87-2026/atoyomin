@@ -2,5 +2,7 @@
 __pycache__/
 *.py[cod]
 
-# GitHub Projects PAT
+# GitHub API PAT
+.env.github
+# Previously used PAT file
 .env.github-projects
