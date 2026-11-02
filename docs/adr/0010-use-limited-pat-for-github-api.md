@@ -16,14 +16,14 @@ fine-grained PATによる[Issue](https://docs.github.com/en/rest/issues/issues#c
 
 各メンバーが発行するfine-grained PAT（対象と操作権限を細かく指定できる個人用アクセストークン）を利用する。Resource ownerは対象の組織とし、リポジトリは`atoyomin`に限定する。Organization permissionsのProjects、Repository permissionsのIssues・Pull requestsにRead and writeを付与し、コードのpush用権限は追加しない。PATは共有しない。
 
-PATはリポジトリ直下の`.env.github`に平文保存し、`.gitignore`で追跡対象から除外する。ファイル権限は`600`とする。Codexがリポジトリ内の実行スクリプトを使い、実行時にファイルを読んで、起動する`gh`だけにPATを渡す。
+PATはリポジトリ直下の`.env.github`に平文保存し、`.gitignore`で追跡対象から除外する。ファイル権限は`600`とする。リポジトリ内の実行スクリプトが実行時にファイルを読み、起動する`gh`だけにPATを渡す。
 
 保存先はセキュリティ上の利点と導入・実装コストを比較し、初回は平文ファイルを採用する。
 
 - **OSの保管庫**：平文より保存時の保護に優れるが、WindowsではWindows・WSL・Dev Containerの3層をまたぐPAT受け渡しが必要になる。macOSも含めて利用するための共通インターフェース設計と、両環境への実装・検証コストがある。
 - **Supabase Vault**：暗号化保管できるが、現時点ではインフラがなく、Supabase環境のプロビジョニングから必要になる。加えてPAT取得の認証とメンバーごとのアクセス制御も整備する必要があり、初回導入には重い。
 
-Gitの取得・pushは今回変更せず、[ADR 0007](0007-use-host-ssh-authentication-for-development.md)のSSH設定を利用する。`gh auth setup-git`は実行しない。これはSSHとPATの分担を恒久的に選ぶ判断ではない。
+Gitの取得・pushには[ADR 0007](0007-use-host-ssh-authentication-for-development.md)のSSH設定を利用し、Git用の認証設定は変更しない。
 
 ## Consequences
 
