@@ -72,5 +72,25 @@ class AuditTranscriptHookTest(unittest.TestCase):
             )
 
 
+            # 形式不一致の過去記録があっても、Hookは今回分を保存して警告する。
+            staging = root / ".codex" / "audit-staging"
+            (staging / "audit-test--broken.jsonl").write_text("invalid\n", encoding="utf-8")
+            response_source = root / "response.jsonl"
+            response_source.write_text(json.dumps({
+                "timestamp": "2026-11-02T01:00:00Z", "type": "response_item",
+                "payload": {"type": "message", "role": "user", "content": [
+                    {"type": "input_text", "text": "latest user message"}]}
+            }) + "\n", encoding="utf-8")
+            payload = json.dumps({"cwd": str(root), "transcript_path": str(response_source), "session_id": "latest"})
+            result = subprocess.run(
+                [sys.executable, str(hook_directory / "audit_transcript.py")],
+                check=True, input=payload, capture_output=True, text=True,
+            )
+            response = json.loads(result.stdout)
+            self.assertTrue(response["continue"])
+            self.assertIn("broken", response["systemMessage"])
+            self.assertIn("latest user message", (root / "docs/audit/audit-test.jsonl").read_text())
+
+
 if __name__ == "__main__":
     unittest.main()
