@@ -85,6 +85,6 @@ PR #32の差分と検証記録を入力として本文を作り、次の観点�
 - 文面は承認前にコミット・公開しなかった。
 - Skillと参照資料のリンク・空白チェックは成功した。
 - `quick_validate.py` によるSkillの書式チェックは成功した。Dev Containerに追加するDebianの `python3-yaml` を一時展開して実行した。必須メタデータ、名前、参照リンク、未完プレースホルダーも確認した。
-- Dockerが利用できないため、Dev Containerの再ビルドは未確認。設定を反映するにはRebuildが必要。
+- 2026-11-02に利用者がDev Containerをリビルドした後、PyYAML 6.0のインポートと、インストール済みのPyYAMLを使った `quick_validate.py` の実行が成功した（`Skill is valid!`）。
 
 この確認は本会話内でSkillを適用したもの。独立したセッションでの自動選択や生成結果の再現性は未検証。
