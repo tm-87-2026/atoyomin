@@ -6,6 +6,12 @@
   },
   "remoteUser": "node",
   "workspaceFolder": "/workspaces/atoyomin",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "remoteEnv": {
+    "GH_TOKEN": "${localEnv:GH_TOKEN}"
+  },
   "forwardPorts": [
     5173
   ],
