@@ -6,12 +6,12 @@ Windows＋WSLではWSL側、macOSではMac側をホストとする。ホスト�
 
 ## PATの発行と保存
 
-組織の管理者はfine-grained PATの利用可否・承認要否・有効期限のポリシーを確認する。各メンバーはGitHubのSettings → Developer settings → Personal access tokens → Fine-grained tokensからPATを発行する。
+組織の管理者はfine-grained PATの利用可否・承認要否を確認する。各メンバーはGitHubのSettings → Developer settings → Personal access tokens → Fine-grained tokensからPATを発行する。
 
 - Resource owner: `tm-87-2026`。
 - Organization permissions: ProjectsのRead and write。
 - Repository access: 最初はPublic repositoriesにとどめ、Repository permissionsは追加しない。非公開リポジトリのIssue・PRを扱う際は対象を`atoyomin`に絞り、必要な読み取り権限だけを検証して追加する。Contentsの書き込み権限は付与しない。
-- 有効期限: 組織のポリシーの範囲で30〜90日。PATは共有しない。
+- PATは各メンバーが自分のものを発行し、共有しない。
 
 Projects権限は特定のProjectだけに限定されない。組織の承認が必要な場合は承認後に接続確認する。
 
@@ -73,7 +73,7 @@ IDやオプションは一覧のJSON出力と各コマンドの`--help`で確認
 
 ## 更新と解除
 
-期限前に新しいPATを発行し、同じ保存手順でホストのファイルを差し替える。ディレクトリをマウントしているため、次のコマンド実行で新しいファイルを読む。VS Codeの終了やRebuildは不要である。古いPATはGitHub上で失効する。実行中の処理には既に取得した古いPATが残る。
+PATを更新する場合は新しいものを発行し、同じ保存手順でホストのファイルを差し替える。ディレクトリをマウントしているため、次のコマンド実行で新しいファイルを読む。VS Codeの終了やRebuildは不要である。古いPATはGitHub上で失効する。実行中の処理には既に取得した古いPATが残る。
 
 利用をやめる場合はPATをGitHub上で失効し、ホストの`~/.config/atoyomin/projects/token`を削除する。
 
