@@ -6,7 +6,15 @@
   },
   "remoteUser": "node",
   "workspaceFolder": "/workspaces/atoyomin",
-  "forwardPorts": [5173],
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "forwardPorts": [
+    5173
+  ],
+  "mounts": [
+    "source=atoyomin-codex-data,target=/home/node/.codex,type=volume"
+  ],
   "portsAttributes": {
     "5173": {
       "label": "Vite development server",
@@ -18,7 +26,8 @@
       "extensions": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "openai.chatgpt"
+        "openai.chatgpt@26.1007.21434",
+        "ms-azuretools.vscode-containers"
       ],
       "settings": {
         "editor.formatOnSave": true,

@@ -1,0 +1,17 @@
+{
+  "description": "Stage raw Codex transcripts for audit-log validation.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$(git rev-parse --show-toplevel)/.codex/hooks/audit_transcript.py\"",
+            "timeout": 10,
+            "statusMessage": "Updating the branch audit log"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "recovery": "one-time; permanent fix tracked by GitHub issue #30",
+  "sources": [
+    {
+      "session_id": "01a19084-6ff1-7ac3-a73b-bc9770a1e2c8",
+      "source": "/workspaces/atoyomin/.codex/audit-staging/main--01a19084-6ff1-7ac3-a73b-bc9770a1e2c8.jsonl",
+      "snapshot": ".codex/audit-staging/recovery-env-28/01a19084-6ff1-7ac3-a73b-bc9770a1e2c8.jsonl",
+      "sha256": "35b3e4e06a76c37c7a22262debce91dd9920393f66a4c4243c61dd0845aba6b5",
+      "messages": 41,
+      "visible_events": 41,
+      "visible_responses": 41,
+      "excluded": {
+        "environment_or_ui_context": 2
+      }
+    },
+    {
+      "session_id": "01a190b5-3509-7f41-babb-a12ed46dd5f5",
+      "source": "/workspaces/atoyomin/.codex/audit-staging/env-28--01a190b5-3509-7f41-babb-a12ed46dd5f5.jsonl",
+      "snapshot": ".codex/audit-staging/recovery-env-28/01a190b5-3509-7f41-babb-a12ed46dd5f5.jsonl",
+      "sha256": "a594610602bd7f68f6ae734068f1b447f96eebf71c4739e54a0c267e9b86723a",
+      "messages": 15,
+      "visible_events": 0,
+      "visible_responses": 15,
+      "excluded": {
+        "environment_or_ui_context": 3
+      }
+    },
+    {
+      "session_id": "01a190cd-49b0-7341-993d-3acd4c00a70b",
+      "source": "/workspaces/atoyomin/.codex/audit-staging/main--01a190cd-49b0-7341-993d-3acd4c00a70b.jsonl",
+      "snapshot": ".codex/audit-staging/recovery-env-28/01a190cd-49b0-7341-993d-3acd4c00a70b.jsonl",
+      "sha256": "3308054b917e7808f51e7f81d5dc2189c1976445d23aa1acd2c2e57f85e9f4a3",
+      "messages": 12,
+      "visible_events": 0,
+      "visible_responses": 12,
+      "excluded": {
+        "environment_or_ui_context": 3
+      }
+    },
+    {
+      "session_id": "01a190e0-ccaa-7700-9a86-079ea47a99b1",
+      "source": "/workspaces/atoyomin/.codex/audit-staging/env-28--01a190e0-ccaa-7700-9a86-079ea47a99b1.jsonl",
+      "snapshot": ".codex/audit-staging/recovery-env-28/01a190e0-ccaa-7700-9a86-079ea47a99b1.jsonl",
+      "sha256": "6f2a16068cb72be84726d75b089655a5349545ea7ab13cecb5d17f1afb6ecfcb",
+      "messages": 81,
+      "visible_events": 0,
+      "visible_responses": 81,
+      "excluded": {
+        "environment_or_ui_context": 4
+      }
+    },
+    {
+      "session_id": "01a19124-6c43-78f2-8873-3f081109b901",
+      "source": "/workspaces/atoyomin/.codex/audit-staging/env-28--01a19124-6c43-78f2-8873-3f081109b901.jsonl",
+      "snapshot": ".codex/audit-staging/recovery-env-28/01a19124-6c43-78f2-8873-3f081109b901.jsonl",
+      "sha256": "7b7ec2f651ec56036f9b339fd7201d9d53de562833778c6cb59d61c2ce1bb32c",
+      "messages": 54,
+      "visible_events": 54,
+      "visible_responses": 54,
+      "excluded": {
+        "environment_or_ui_context": 3
+      }
+    },
+    {
+      "session_id": "01a1979f-8532-7001-bb61-8e29c29dc84b",
+      "source": "/home/node/.codex/sessions/2026/11/01/rollout-2026-11-01T14-59-36-01a1979f-8532-7001-bb61-8e29c29dc84b.jsonl",
+      "snapshot": ".codex/audit-staging/recovery-env-28/01a1979f-8532-7001-bb61-8e29c29dc84b.jsonl",
+      "sha256": "8ef73232e55f6488173742157661ab59b648f41f3f13b1522926802ce9afe324",
+      "messages": 146,
+      "visible_events": 0,
+      "visible_responses": 146,
+      "excluded": {
+        "environment_or_ui_context": 5
+      }
+    }
+  ],
+  "legacy_only_messages": 0,
+  "total_messages": 373,
+  "first_timestamp": "2026-10-31T05:52:42.425Z",
+  "last_timestamp": "2026-11-02T02:40:18.106Z",
+  "raw_snapshots": ".codex/audit-staging/recovery-env-28",
+  "excluded_sessions": "approval-review sessions; env/26",
+  "limitation": "snapshot through last_timestamp; subsequent turns require another export until #30 is fixed",
+  "redaction": {
+    "scope": "repository env-28 audit exports, relevant staged transcripts and recovery snapshots",
+    "categories": [
+      "credentials",
+      "email addresses",
+      "personal user and host identifiers",
+      "SSH key identifiers",
+      "temporary agent socket paths"
+    ],
+    "snapshot_hashes": "SHA-256 values refer to redacted snapshots",
+    "limitation": "Codex-managed live session originals are not modified; future exports must apply masking again"
+  },
+  "final_export": {
+    "exported_at": "2026-11-02T02:40:50.853799+00:00",
+    "previous_last_timestamp": "2026-11-02T02:11:16.716Z",
+    "appended_sources": [
+      {
+        "session_id": "01a1979f-8532-7001-bb61-8e29c29dc84b",
+        "source": "/workspaces/atoyomin/.codex/audit-staging/env-28--01a1979f-8532-7001-bb61-8e29c29dc84b.jsonl",
+        "source_sha256": "934535347c57ec5120e978c389f80e38c231a08b54205618f5d18599c2acdf56",
+        "appended_messages": 13,
+        "excluded_context_messages": 1
+      },
+      {
+        "session_id": "01a19a1b-95c2-7260-a035-92530503e4b6",
+        "source": "/home/node/.codex/sessions/2026/11/02/rollout-2026-11-02T02-34-21-01a19a1b-95c2-7260-a035-92530503e4b6.jsonl",
+        "source_sha256": "10f31b4cf02f34f96cbe075f9926753b72bd928d7ebd07dff8e04a7f94d1d6e1",
+        "appended_messages": 11,
+        "excluded_context_messages": 2
+      }
+    ],
+    "total_messages": 373,
+    "first_timestamp": "2026-10-31T05:52:42.425Z",
+    "last_timestamp": "2026-11-02T02:40:18.106Z",
+    "sha256": "04de618b92055c6ac8d6a61b4331e9cc28990cddd158520ea94fde247e2985a6",
+    "duplicate_export": "docs/audit/env-28.recovered.jsonl",
+    "validation": "JSON parse, unique session/timestamp/speaker, visible message roles only, credential and personal identifier masking",
+    "limitation": "Snapshot ends at last_timestamp. Export/commit reporting and subsequent conversation are outside this snapshot. Codex-managed session originals are unchanged; #30 tracks automatic recording and incremental export."
+  }
+}
