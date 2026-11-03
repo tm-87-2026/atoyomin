@@ -23,9 +23,6 @@
 ## 開発環境
 
 開発ツールはDev Container内で利用します。Node.jsやpnpmをホストOSへ直接インストールする必要はありません。
-GitHub への認証方法は[GitHub 認証](docs/development/github-authentication.md)を参照してください。
-Issue・PR・Projectsの操作には[GitHub APIの設定手順](docs/development/github-api.md)を利用してください。
-
 
 ### 必要なもの
 
@@ -49,6 +46,8 @@ Issue・PR・Projectsの操作には[GitHub APIの設定手順](docs/development
 
 [Dockerfile](.devcontainer/Dockerfile)ではNode.js 22とpnpm 10.12.4を指定しています。
 [Dev Container設定](.devcontainer/devcontainer.json)では、Vite開発サーバー用のポート5173を転送し、ESLint・Prettier・CodexのVS Code拡張機能を導入します。
+[GitHub 認証](docs/development/github-authentication.md)には、DevcontainerでのGitHub への認証方法を記載しています。
+[GitHub APIの設定手順](docs/development/github-api.md)には、agentにIssue・PR・Projectsの捜査権限を渡す手順を記載しています。
 
 アプリケーションの雛形が未作成のため、現時点では依存関係のインストール、開発サーバーの起動、ビルド、テストのコマンドはありません。実装時にこのREADMEへ追記します。
 
