@@ -80,4 +80,4 @@ git worktree list --porcelain
 
 ローカルブランチがある場合は `git worktree add "$task_path" "$task_branch"`、リモートだけにある場合は `git worktree add --track -b "$task_branch" "$task_path" "origin/$task_branch"` で再利用する。既にチェックアウトされていれば、そのworktreeを開く。
 
-コマンドは一段階ずつ成功を確認する。失敗したまま次へ進まない。作成・起動の結果を区別し、ブランチ名・worktreeのパス・ウィンドウ起動コマンドの結果を報告して終了する。新しいウィンドウへのCodex会話の引き継ぎや、上記リンク以外の認証・開発環境設定は自動的に行わない。開いた後の開発ワークフローは #40 で別途定義する。
+コマンドは一段階ずつ成功を確認する。失敗したまま次へ進まない。作成・起動の結果を区別し、ブランチ名・worktreeのパス・ウィンドウ起動コマンドの結果を報告して終了する。新しいウィンドウへのCodex会話の引き継ぎや、上記リンク以外の認証・開発環境設定は自動的に行わない。開いた後の作業は[開発ワークフロー](../../../docs/development/development-workflow.md)に従う。
