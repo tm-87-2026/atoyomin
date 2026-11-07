@@ -10,7 +10,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p ${PNPM_HOME} \
-    && chown -R node:node ${PNPM_HOME} \
+    && mkdir -p /home/node/.codex \
+    && chown -R node:node ${PNPM_HOME} /home/node/.codex \
     && corepack enable \
     && corepack prepare pnpm@${PNPM_VERSION} --activate
 
