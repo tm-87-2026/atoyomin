@@ -5,8 +5,7 @@
 
 ## 現在の状況
 
-技術選定と開発環境の整備を進めています。アプリケーション本体はまだ実装していません。
-`package.json`や依存関係のlockfile、Supabaseの設定、デプロイ設定は未作成です。
+Supabaseとの接続を確認する最小アプリケーションを実装しています。認証、保存URL、読了状態、LINE連携は未実装です。
 
 ## 採用技術
 
@@ -49,13 +48,29 @@
 [GitHub 認証](docs/development/github-authentication.md)には、DevcontainerでのGitHub への認証方法を記載しています。
 [GitHub APIの設定手順](docs/development/github-api.md)には、agentにIssue・PR・Projectsの捜査権限を渡す手順を記載しています。
 
-アプリケーションの雛形が未作成のため、現時点では依存関係のインストール、開発サーバーの起動、ビルド、テストのコマンドはありません。実装時にこのREADMEへ追記します。
+### アプリケーションを起動する
+
+Supabaseを含むセットアップ手順は[SupabaseとCloudflare Pagesのセットアップ](docs/development/supabase-cloudflare-pages.md)を参照してください。
+
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+```
+
+ビルドとLintは次のコマンドで実行します。
+
+```sh
+pnpm build
+pnpm lint
+```
 
 ## リポジトリ構成
 
 ```text
 .devcontainer/  開発コンテナの定義
 .agents/skills/ 開発作業で利用するスキル
+src/            Reactアプリケーション
+supabase/       データベースのマイグレーション
 docs/adr/      設計・技術選定の意思決定記録
 AGENTS.md      リポジトリ共通の作業規約
 README.md      プロジェクトの概要と開発環境の案内
