@@ -44,5 +44,7 @@
 
 | 変更内容 | 参照する規約 |
 | --- | --- |
+| TypeScript・Reactコードの追加・変更 | [コーディング規約](docs/conventions/coding.md) |
+| アプリケーションの設計・実装・レビュー | [設計規約](docs/conventions/design.md) |
 | Pythonコードの追加・変更 | [Pythonコードの記述規約](docs/conventions/python-documentation.md) |
 | GitHubのIssue・PR・Projectsの操作 | [GitHub APIの操作手順](docs/development/github-api.md) |

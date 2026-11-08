@@ -87,3 +87,5 @@ README.md      プロジェクトの概要と開発環境の案内
 ## 開発時の規約
 
 変更前に[AGENTS.md](AGENTS.md)を確認してください。ブランチ運用、コミット、ドキュメントの管理方針を定めています。
+
+アプリケーションの実装・レビューでは[コーディング規約](docs/conventions/coding.md)と[設計規約](docs/conventions/design.md)を参照してください。Pythonコードには[Pythonコードの記述規約](docs/conventions/python-documentation.md)を適用します。
