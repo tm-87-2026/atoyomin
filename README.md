@@ -9,13 +9,13 @@ Supabaseとの接続を確認する最小アプリケーションを実装して
 
 ## 採用技術
 
-| 用途 | 技術 |
-| --- | --- |
-| フロントエンド | React・Vite・TypeScript |
-| バックエンド | Supabase（PostgreSQL・認証・必要に応じてEdge Functionsなど） |
-| フロントエンドの配信 | Cloudflare Pages |
-| パッケージ管理 | pnpm |
-| 標準開発環境 | Dev Containers |
+| 用途                 | 技術                                                         |
+| -------------------- | ------------------------------------------------------------ |
+| フロントエンド       | React・Vite・TypeScript                                      |
+| バックエンド         | Supabase（PostgreSQL・認証・必要に応じてEdge Functionsなど） |
+| フロントエンドの配信 | Cloudflare Pages                                             |
+| パッケージ管理       | pnpm                                                         |
+| 標準開発環境         | Dev Containers                                               |
 
 採用理由と運用方針は[設計上の意思決定](#設計上の意思決定)に記録しています。
 
@@ -62,6 +62,12 @@ pnpm dev
 ```sh
 pnpm build
 pnpm lint
+```
+
+Prettierは、VS Codeで保存すると整形されます。変更を確認するときは次を実行します。整形が必要な場合は`pnpm format`を実行します。
+
+```sh
+pnpm format:check
 ```
 
 ## リポジトリ構成
