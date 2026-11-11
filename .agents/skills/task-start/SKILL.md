@@ -1,11 +1,18 @@
 ---
 name: task-start
-description: "GitHub Issue番号を指定した「#番号に着手する」「#番号のタスクを開始する」という呼びかけで、ブランチ・worktreeを準備し、別ウィンドウで開く。"
+description: "元リポジトリからGitHub Issueの作業環境を準備する依頼で、ブランチ・worktreeを用意し、別ウィンドウで開く。同じIssueのタスク用worktree内での開始・再開には適用せず、development-workflowを使う。"
 ---
 
 # タスク開始
 
 ## 対象と操作経路
+
+開始を表す言い回しだけで環境準備と判断せず、APIや変更操作より前に現在の環境と依頼を照合する。
+
+1. `git rev-parse --show-toplevel`、`git branch --show-current`、`git worktree list --porcelain`、`git status --short --branch`で現在のリポジトリ・ブランチ・worktreeと依頼対象Issueを確認する。パス名だけでタスクを判断せず、利用者の変更を保持する。
+2. 同じIssueのタスク用worktree内での「#番号に着手する」「#番号をやります」などの開始・再開は、現在の環境で[development-workflowの状態確認](../development-workflow/SKILL.md#状態を確かめる)へ進む。このSkillの準備・担当者追加・認証リンク作成・別ウィンドウ起動は行わない。
+3. 元リポジトリからタスク用の環境準備を依頼された場合は、以下の操作経路と準備手順を使う。対象ブランチ・worktreeが既にある場合も再利用手順へ進む。
+4. 上の元リポジトリからの環境準備に該当せず、現在位置やIssueとブランチの対応が不明・不一致なら、準備操作へ進まず状況を示して確認する。別Issueへの切り替えはここでは扱わない。
 
 - 依頼のURL、または `git remote get-url origin` から対象の `owner/name` を特定する。番号だけで他のリポジトリを検索しない。
 - リポジトリの `AGENTS.md` と変更対象に適用される規約を確認する。
@@ -27,11 +34,11 @@ Issueのラベルから次の対応表でprefixを選び、ブランチ名を `<
 
 ## 「#番号に着手する」
 
-開始の呼びかけでは、ブランチ・worktreeを準備し、別ウィンドウで開いて準備完了を報告する。開始時には本人をIssueの担当者に追加する。実装、コミット、push、PR作成、Projectの更新や担当者以外のIssue更新へ自動的に進まない。
+対象と操作経路で環境準備と判断した場合は、ブランチ・worktreeを準備し、別ウィンドウで開いて準備完了を報告する。環境準備時には本人をIssueの担当者に追加する。実装、コミット、push、PR作成、Projectの更新や担当者以外のIssue更新へ自動的に進まない。
 
 - Issueと既存ブランチ・worktree、作業ツリーの状態を確認する。利用者の変更を移動・破棄しない。
 - `bash tools/gh.sh api user --jq .login` で認証中のアカウントを確認し、開始する本人として識別できたら `issue edit <番号> --repo <owner/name> --add-assignee <login>` で担当者に追加する。既存担当者は外さない。別人の認証など本人との対応が不明なら確認する。追加後は `issue view <番号> --repo <owner/name> --json assignees` で反映を確認する。
-- `git worktree list --porcelain` の先頭のworktreeを元リポジトリとして確認する。現在位置が既存worktreeでも、配置先とPATの参照元は元リポジトリを基準にする。
+- `git worktree list --porcelain` の先頭のworktreeを元リポジトリとして確認する。環境準備を行う場合の配置先とPATの参照元は元リポジトリを基準にする。同じIssueの既存worktree内での開始・再開にはこの準備手順を適用しない。
 - ブランチ名は対応表の `<prefix>/<Issue番号>`、worktreeの配置先はリポジトリ直下の `.worktrees/<prefix>-<Issue番号>` とする。例: `env/23` と `.worktrees/env-23`。
 - 新規ブランチは `git fetch origin` の成功を確認し、最新の `origin/main` から作成する。取得に失敗した場合、古い参照を最新として扱わない。
 - 同じタスクのブランチ・worktreeが既にある場合は再利用する。既存ブランチを `origin/main` にリセットしない。別の配置先にある既存worktreeも重複作成せず、その場所を使う。
@@ -41,7 +48,7 @@ Issueのラベルから次の対応表でprefixを選び、ブランチ名を `<
 
 ## コマンドと確認
 
-最初に対象Issueと作業状態を確認する。
+上の環境確認で準備へ進むと判断した場合に、対象Issueと作業状態を確認する。
 
 ```sh
 git remote get-url origin
@@ -55,7 +62,7 @@ git branch --remotes
 
 ラベルが未設定・複数・対応表にない場合はprefixを確認する。閉じたIssueは再開の意図を確認する。
 
-以下は新規タスクの例。変数には確認した値を設定する。
+以下は元リポジトリから新規タスクの環境を準備する場合の例。変数には確認した値を設定する。
 
 ```sh
 # git worktree list --porcelain の先頭のworktreeを元リポジトリとして確認する。

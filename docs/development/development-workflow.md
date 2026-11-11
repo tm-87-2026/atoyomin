@@ -2,7 +2,7 @@
 
 ## 目的と適用範囲
 
-要求の認識ずれを実装へ持ち込まず、前の会話履歴がなくても作業を再開できるよう、worktreeを開いた後の工程・成果物・移行条件をここに定める。本書を運用ルールの正本とし、起動操作は[development-workflow Skill](../../.agents/skills/development-workflow/SKILL.md)を使う。ブランチ・worktreeの準備は[task-start](../../.agents/skills/task-start/SKILL.md)が担当する。
+要求の認識ずれを実装へ持ち込まず、前の会話履歴がなくても作業を再開できるよう、worktreeを開いた後の工程・成果物・移行条件をここに定める。本書を運用ルールの正本とし、起動操作は[development-workflow Skill](../../.agents/skills/development-workflow/SKILL.md)を使う。元リポジトリからのブランチ・worktreeの準備は[task-start](../../.agents/skills/task-start/SKILL.md)が担当する。同じIssueのタスク用worktree内での「#番号に着手する」「#番号をやります」などの開始・再開は本書の対象とし、現在の環境で成果物と合意状態に応じた工程から進める。開始の言い回しだけで環境準備へ戻らない。
 
 すべてのタスクで、まず目的・範囲・完了の目安をユーザーとすり合わせる。非実装タスクは、その後に必要な作業と確認を行い、根拠を既存文書または報告へ残す。4工程・4ファイルを一律に求めず、非実装専用のフローも設けない。小規模変更で工程をまとめる場合は、対象工程・省く区切り・理由・確認方法をユーザーと合意して記録する。Codexだけの判断で省略しない。
 
