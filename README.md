@@ -73,6 +73,8 @@ README.md      プロジェクトの概要と開発環境の案内
 
 - [ADR 0011: 実装を通じてアーキテクチャを具体化する](docs/adr/0011-evolve-architecture-through-implementation.md)
 
+- [ADR 0012: フロントエンドを機能単位で配置する](docs/adr/0012-organize-frontend-by-feature.md)
+
 ## 開発時の規約
 
 変更前に[AGENTS.md](AGENTS.md)を確認してください。ブランチ運用、コミット、ドキュメントの管理方針を定めています。
