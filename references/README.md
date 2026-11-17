@@ -11,6 +11,8 @@
 - 出典：<https://github.com/alan2207/bulletproof-react>
 - ライセンス：[MIT](bulletproof-react/LICENSE)
 
+通常の `rg` 検索では `.ignore` により `references/` を除外する。AIによる原文確認の手順は[reference-check Skill](../.agents/skills/reference-check/SKILL.md)に定める。
+
 ### 取得
 
 新しくクローンするときは `git clone --recurse-submodules <リポジトリURL>` を使う。既存のクローンやworktreeでは、リポジトリ直下から次を実行する。
