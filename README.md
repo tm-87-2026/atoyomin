@@ -63,11 +63,15 @@ README.md      プロジェクトの概要と開発環境の案内
 
 ## 設計上の意思決定
 
+実装・レビュー時の初期方針は[アーキテクチャドキュメント](docs/architecture.md)を参照してください。
+
 - [ADR 0001: Dev Containersを標準開発環境にする](docs/adr/0001-dev-containers-as-standard-development-environment.md)
 - [ADR 0002: バックエンドサービスにSupabaseを採用する](docs/adr/0002-use-supabase-for-backend-services.md)
 - [ADR 0003: フロントエンドの配信にCloudflare Pagesを採用する](docs/adr/0003-use-cloudflare-pages-for-frontend-hosting.md)
 - [ADR 0004: WebフロントエンドにReact・Vite・TypeScriptを採用する](docs/adr/0004-use-react-vite-and-typescript-for-the-web-frontend.md)
 - [ADR 0005: JavaScriptの依存関係をpnpmで管理する](docs/adr/0005-manage-javascript-dependencies-with-pnpm.md)
+
+- [ADR 0011: 実装を通じてアーキテクチャを具体化する](docs/adr/0011-evolve-architecture-through-implementation.md)
 
 ## 開発時の規約
 
