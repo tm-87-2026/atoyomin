@@ -33,7 +33,7 @@
 
 ### 起動手順
 
-1. リポジトリをクローンします。WindowsではWSL2内に配置します。
+1. `git clone --recurse-submodules <リポジトリURL>` でクローンします。WindowsではWSL2内に配置します。既存のクローンでは `git submodule update --init --recursive` で参照資料を取得します。
 2. Docker互換ランタイムを起動します。
 3. リポジトリをVS Codeで開きます。
 4. コマンドパレットから`Dev Containers: Reopen in Container`を実行します。
@@ -57,6 +57,7 @@
 .devcontainer/  開発コンテナの定義
 .agents/skills/ 開発作業で利用するスキル
 docs/adr/      設計・技術選定の意思決定記録
+references/    外部の参照資料（取得・更新手順はreferences/README.md）
 AGENTS.md      リポジトリ共通の作業規約
 README.md      プロジェクトの概要と開発環境の案内
 ```
