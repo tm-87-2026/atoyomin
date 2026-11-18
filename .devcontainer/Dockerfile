@@ -1,4 +1,8 @@
+FROM denoland/deno:2.5.6 AS deno
+
 FROM node:22-bookworm
+
+COPY --from=deno /usr/bin/deno /usr/local/bin/deno
 
 ARG PNPM_VERSION=10.12.4
 
