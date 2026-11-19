@@ -30,7 +30,7 @@ APIから取得した結果は、コンポーネントのstateやデータ取得
 
 ## コードの配置と依存関係
 
-[ローカルのBulletproof ReactのProject Structure](../../references/bulletproof-react/docs/project-structure.md)を参照する。以下はコミット `9506629ed003a561c6627735480cce4994244bb4` の原文に基づく要約である。参照資料の取得方法は[references/README.md](../../references/README.md)を参照する。採用理由は[ADR 0012](../adr/0012-organize-frontend-by-feature.md)に記録する。
+[ローカルのBulletproof ReactのProject Structure](../../references/bulletproof-react/docs/project-structure.md)を参照する。以下はコミット `9506629ed003a561c6627735480cce4994244bb4` の原文に基づく要約である。参照資料の取得方法は[references/README.md](../../references/README.md)を参照する。採用理由は[ADR 0014](../adr/0014-organize-frontend-by-feature.md)に記録する。
 
 ### 配置
 

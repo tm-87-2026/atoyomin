@@ -6,7 +6,7 @@
 
 開発は3人で業務時間外に行い、2027年3月19日までにプロダクトバックログのStoryをすべて実装することを目指す。Supabaseは全員未経験であり、React・TypeScriptの経験にも差がある。コードの役割と変更の影響をチームで理解し、一定の品質で開発できることを重視する。
 
-初めから特定のアーキテクチャに固定せず、[設計規約](conventions/design.md)と本書に沿って実装を始め、実際のコードをもとに構成を見直す。判断の背景は[ADR 0011](adr/0011-evolve-architecture-through-implementation.md)に記録する。
+初めから特定のアーキテクチャに固定せず、[設計規約](conventions/design.md)と本書に沿って実装を始め、実際のコードをもとに構成を見直す。判断の背景は[ADR 0013](adr/0013-evolve-architecture-through-implementation.md)に記録する。
 
 ## 全体構成と責務
 

@@ -1,4 +1,4 @@
-# ADR 0013: Bulletproof ReactをGit submoduleで管理する
+# ADR 0015: Bulletproof ReactをGit submoduleで管理する
 
 ## Status
 

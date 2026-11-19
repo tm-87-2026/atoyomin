@@ -87,9 +87,9 @@ README.md      プロジェクトの概要と開発環境の案内
 - [ADR 0004: WebフロントエンドにReact・Vite・TypeScriptを採用する](docs/adr/0004-use-react-vite-and-typescript-for-the-web-frontend.md)
 - [ADR 0005: JavaScriptの依存関係をpnpmで管理する](docs/adr/0005-manage-javascript-dependencies-with-pnpm.md)
 
-- [ADR 0011: 実装を通じてアーキテクチャを具体化する](docs/adr/0011-evolve-architecture-through-implementation.md)
+- [ADR 0013: 実装を通じてアーキテクチャを具体化する](docs/adr/0013-evolve-architecture-through-implementation.md)
 
-- [ADR 0012: フロントエンドを機能単位で配置する](docs/adr/0012-organize-frontend-by-feature.md)
+- [ADR 0014: フロントエンドを機能単位で配置する](docs/adr/0014-organize-frontend-by-feature.md)
 
 ## 開発時の規約
 
