@@ -6,9 +6,9 @@
 
 Supabaseが提供する認証・データAPIと、自分たちで定義するテーブル・制約・RLS、自分たちで書くサーバー処理を区別する。バックエンドの責務は、サーバー処理のコードだけで完結するものとして扱わない。
 
-共通の設計原則に従って実装し、Supabaseの処理の流れと制約を確認してから、業務処理・DBアクセス・外部サービス連携をどこまで分離するか判断する。
+[設計規約](../conventions/design.md)に従って実装し、Supabaseの処理の流れと制約を確認してから、業務処理・DBアクセス・外部サービス連携をどこまで分離するか判断する。
 
-最初の確認には[Issue #47](https://github.com/tm-87-2026/atoyomin/issues/47)のミニマルな実装を利用する。認証方式・認証リクエストの流れ・トークン管理の詳細は[Issue #20](https://github.com/tm-87-2026/atoyomin/issues/20)で扱う。
+[Issue #47](https://github.com/tm-87-2026/atoyomin/issues/47)の最小アプリケーションは実装済みである。接続確認の手順は[セットアップ文書](../development/supabase-cloudflare-pages.md)を参照する。今後の機能実装を通じて責務の分離を見直す。認証方式・認証リクエストの流れ・トークン管理の詳細は[Issue #20](https://github.com/tm-87-2026/atoyomin/issues/20)で扱う。
 
 ## 実装を通じて具体化する事項
 
