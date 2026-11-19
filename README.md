@@ -43,8 +43,8 @@ Supabaseとの接続を確認する最小アプリケーションを実装して
    pnpm --version
    ```
 
-[Dockerfile](.devcontainer/Dockerfile)ではNode.js 22、pnpm 10.12.4、Deno 2.5.6を指定しています。
-[Dev Container設定](.devcontainer/devcontainer.json)では、Vite開発サーバー用のポート5173を転送し、ESLint・Prettier・CodexのVS Code拡張機能を導入します。Supabaseローカル検証用にDocker-in-Docker Featureを設定しており、反映にはコンテナの再構築が必要です。
+[Dockerfile](.devcontainer/Dockerfile)ではNode.js 22とpnpm 10.12.4を指定しています。
+[Dev Container設定](.devcontainer/devcontainer.json)では、Vite開発サーバー用のポート5173を転送し、ESLint・Prettier・CodexのVS Code拡張機能を導入します。
 [GitHub 認証](docs/development/github-authentication.md)には、DevcontainerでのGitHub への認証方法を記載しています。
 [GitHub APIの設定手順](docs/development/github-api.md)には、agentにIssue・PR・Projectsの捜査権限を渡す手順を記載しています。
 

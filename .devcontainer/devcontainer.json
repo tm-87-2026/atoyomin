@@ -7,14 +7,7 @@
   "remoteUser": "node",
   "workspaceFolder": "/workspaces/atoyomin",
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/common-utils:2": {
-      "username": "node",
-      "installZsh": false,
-      "installOhMyZsh": false,
-      "upgradePackages": false
-    },
-    "ghcr.io/devcontainers/features/docker-in-docker:4": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {}
   },
   "forwardPorts": [
     5173
