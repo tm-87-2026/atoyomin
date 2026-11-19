@@ -83,6 +83,10 @@ PagesプロジェクトのEnvironment variablesで、ProductionとPreviewの両�
 
 デプロイ後、PagesのURLを開き、接続確認メッセージが表示されることを確認します。
 
+## LINEを接続する
+
+テキストの受信と確認返信は[LINE Messaging APIの接続手順](line-messaging-api.md)で準備します。LINEの秘密情報はSupabaseのサーバー専用Secretsへ登録し、Pagesや`VITE_`変数へ入れません。外部環境の確認と設定は同手順の設定前確認を満たしてから行います。
+
 ## 今後の運用
 
 `main`へのマージでマイグレーションを自動適用する場合は、`supabase/`をGitHubへコミットした後にSupabaseのGitHub integrationを有効にします。現在は、マイグレーション適用を担当者が明示的に実行します。
