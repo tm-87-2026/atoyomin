@@ -5,7 +5,7 @@
 
 ## 現在の状況
 
-Supabaseとの接続を確認する最小アプリケーションを実装しています。認証、保存URL、読了状態、LINE連携は未実装です。
+Supabaseとの接続を確認する最小アプリケーションを実装しています。LINEの署名検証と接続確認用の固定返信を実装しています。非本番の公開環境で署名検証と1対1トークの確認返信を検証済みです。検証結果と未実施事項は[LINE Messaging APIの接続手順](docs/development/line-messaging-api.md)を参照してください。認証、保存URL、読了状態、LINEアカウント紐付けは未実装です。
 
 ## 採用技術
 
@@ -43,12 +43,14 @@ Supabaseとの接続を確認する最小アプリケーションを実装して
    pnpm --version
    ```
 
-[Dockerfile](.devcontainer/Dockerfile)ではNode.js 22とpnpm 10.12.4を指定しています。
-[Dev Container設定](.devcontainer/devcontainer.json)では、Vite開発サーバー用のポート5173を転送し、ESLint・Prettier・CodexのVS Code拡張機能を導入します。
+[Dockerfile](.devcontainer/Dockerfile)ではNode.js 22、pnpm 10.12.4、Deno 2.5.6を指定しています。
+[Dev Container設定](.devcontainer/devcontainer.json)では、Vite開発サーバー用のポート5173を転送し、ESLint・Prettier・CodexのVS Code拡張機能を導入します。Supabaseローカル検証用にDocker-in-Docker Featureを設定しており、反映にはコンテナの再構築が必要です。
 [GitHub 認証](docs/development/github-authentication.md)には、DevcontainerでのGitHub への認証方法を記載しています。
 [GitHub APIの設定手順](docs/development/github-api.md)には、agentにIssue・PR・Projectsの捜査権限を渡す手順を記載しています。
 
 ### アプリケーションを起動する
+
+LINEの設定・検証は[LINE Messaging APIの接続手順](docs/development/line-messaging-api.md)を参照してください。
 
 Supabaseを含むセットアップ手順は[SupabaseとCloudflare Pagesのセットアップ](docs/development/supabase-cloudflare-pages.md)を参照してください。
 
@@ -76,7 +78,7 @@ pnpm format:check
 .devcontainer/  開発コンテナの定義
 .agents/skills/ 開発作業で利用するスキル
 src/            Reactアプリケーション
-supabase/       データベースのマイグレーション
+supabase/       マイグレーション・サーバー関数
 docs/adr/      設計・技術選定の意思決定記録
 AGENTS.md      リポジトリ共通の作業規約
 README.md      プロジェクトの概要と開発環境の案内
