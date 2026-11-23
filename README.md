@@ -32,7 +32,7 @@ Supabaseとの接続を確認する最小アプリケーションを実装して
 
 ### 起動手順
 
-1. リポジトリをクローンします。WindowsではWSL2内に配置します。
+1. `git clone --recurse-submodules <リポジトリURL>` でクローンします。WindowsではWSL2内に配置します。既存のクローンでは `git submodule update --init --recursive` で参照資料を取得します。
 2. Docker互換ランタイムを起動します。
 3. リポジトリをVS Codeで開きます。
 4. コマンドパレットから`Dev Containers: Reopen in Container`を実行します。
@@ -80,17 +80,24 @@ pnpm format:check
 src/            Reactアプリケーション
 supabase/       マイグレーション・サーバー関数
 docs/adr/      設計・技術選定の意思決定記録
+references/    外部の参照資料（取得・更新手順はreferences/README.md）
 AGENTS.md      リポジトリ共通の作業規約
 README.md      プロジェクトの概要と開発環境の案内
 ```
 
 ## 設計上の意思決定
 
+実装・レビュー時の初期方針は[アーキテクチャドキュメント](docs/architecture.md)を参照してください。
+
 - [ADR 0001: Dev Containersを標準開発環境にする](docs/adr/0001-dev-containers-as-standard-development-environment.md)
 - [ADR 0002: バックエンドサービスにSupabaseを採用する](docs/adr/0002-use-supabase-for-backend-services.md)
 - [ADR 0003: フロントエンドの配信にCloudflare Pagesを採用する](docs/adr/0003-use-cloudflare-pages-for-frontend-hosting.md)
 - [ADR 0004: WebフロントエンドにReact・Vite・TypeScriptを採用する](docs/adr/0004-use-react-vite-and-typescript-for-the-web-frontend.md)
 - [ADR 0005: JavaScriptの依存関係をpnpmで管理する](docs/adr/0005-manage-javascript-dependencies-with-pnpm.md)
+
+- [ADR 0013: 実装を通じてアーキテクチャを具体化する](docs/adr/0013-evolve-architecture-through-implementation.md)
+
+- [ADR 0014: フロントエンドを機能単位で配置する](docs/adr/0014-organize-frontend-by-feature.md)
 
 ## 開発時の規約
 
