@@ -73,4 +73,6 @@
 
 コミット了承はPR作成の了承を含まない。PR作成前に別途ユーザー確認を得る。PRの文面作成・レビューは[pr-writing](../../.agents/skills/pr-writing/SKILL.md)に従い、文面確認の指定があればその承認も守る。
 
+`main`への取り込み経路とGitHub側の制限方針は[mainブランチの運用方針](main-branch-policy.md)を参照する。
+
 Issue起票・ラベル・Project登録は[task-create](../../.agents/skills/task-create/SKILL.md)の責務であり、要求書完成を起票条件にしない。着手準備、ADR承認、PR文面の責務を本ワークフローで置き換えない。

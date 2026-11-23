@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "fmt": {
+    "semiColons": false,
+    "singleQuote": true
+  },
+  "tasks": {
+    "test": "deno test . ../../../tools/line",
+    "check": "deno check index.ts webhook_test.ts ../../../tools/line/*.ts",
+    "lint": "deno lint . ../../../tools/line",
+    "fmt": "deno fmt --check . ../../../tools/line"
+  }
+}

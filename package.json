@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint .",
     "preview": "vite preview",
     "supabase": "supabase"
@@ -26,6 +28,7 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "eslint-plugin-react-refresh": "0.5.7",
     "globals": "17.4.0",
+    "prettier": "^3.9.10",
     "supabase": "3.0.0",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.1",
