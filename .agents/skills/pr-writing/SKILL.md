@@ -59,6 +59,16 @@ GitHubから取得するときは、[APIの参照先](references/github-api.md)�
 - 「変更内容」の同じ階層には、同じ粒度の変更を並べる。追加する成果物と、その中の方針・資料を同列にしない。1つの成果物に含まれる内容は、導入文と箇条書き、または親子の箇条書きで示す。
 - スコープが変わった場合は、最終的な変更に合わせてタイトルと本文を書き直す。
 
+### Issueの指定
+
+PRのマージで完了するIssueを明確にし、関連するだけのIssueを誤ってクローズしないよう、Issueの完了条件とPRの変更範囲を照合する。
+
+- PRで完了するIssueは、本文に `Closes #10` のようにクローズ用キーワードとIssue番号を書く。別リポジトリの場合は `Closes owner/repo#10` とし、複数の場合は `Closes #10, Closes #11` のようにそれぞれにキーワードを付ける。
+- 関連するだけで、このPRでは完了しないIssueは、クローズ用キーワードを付けずに `関連: #11` のように参照する。
+- PR本文のキーワードはPRのbaseがリポジトリのデフォルトブランチの場合に解釈され、マージ時にリンクしたIssueが自動クローズされる。別のブランチ宛ての場合は自動クローズを期待せず、その後の扱いを明確にする。リポジトリで自動クローズが無効な場合も自動では閉じない。
+
+対応キーワードや条件の詳細は[GitHub公式資料](https://docs.github.com/ja/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)を、自動クローズの設定は[設定の説明](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/managing-auto-closing-issues)を参照する。
+
 ### 情報量・根拠
 
 | 情報 | 扱い |
@@ -104,6 +114,7 @@ GitHubから取得するときは、[APIの参照先](references/github-api.md)�
 - [ ] 各見出しが役割を果たし、「変更内容」に実現手段が混ざりすぎていない。
 - [ ] レビューに必要な選択理由・制約を「設計上の判断」で説明している。該当しない場合は省いている。
 - [ ] 変更内容の同じ階層に、成果物とその内訳が混ざっていない。
+- [ ] 完了するIssueと関連するだけのIssueを区別し、baseと自動クローズの条件に合う指定になっている。
 - [ ] 本文は変更全体を説明し、レビューコメントは対象箇所への指摘になっている。
 
 ## 承認・反映
