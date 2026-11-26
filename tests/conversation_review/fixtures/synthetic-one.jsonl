@@ -1,0 +1,11 @@
+{"timestamp":"2026-11-26T00:00:00Z","session_id":"planning","speaker":"human","message":"実装前に関連コードを調べ、変更案を小さな手順に分けてください。","phase":null}
+{"timestamp":"2026-11-26T00:01:00Z","session_id":"planning","speaker":"codex","message":"調査して計画を作ります。","phase":null}
+{"timestamp":"2026-11-26T00:02:00Z","session_id":"planning","speaker":"human","message":"方針はA案にします。理由は既存の保存形式を維持できるためです。","phase":null}
+{"timestamp":"2026-11-26T00:03:00Z","session_id":"planning","speaker":"codex","message":"A案で進めます。","phase":null}
+{"timestamp":"2026-11-26T00:04:00Z","session_id":"planning","speaker":"human","message":"変更後はfocused testと全テストを実行し、結果をTODOへ記録してください。docs/audit/kaizen-72.jsonlは変更しないでください。","phase":null}
+{"timestamp":"2026-11-26T00:05:00Z","session_id":"planning","speaker":"codex","message":"No, this is not a question? というテスト文字列を追加します。","phase":null}
+{"timestamp":"2026-11-26T00:06:00Z","session_id":"planning","speaker":"human","message":"「変更しないで」という語句をテストデータに含めてください。これは方針訂正ではありません。","phase":null}
+{"timestamp":"2026-11-26T00:07:00Z","session_id":"planning","speaker":"codex","message":"テストデータへ含めました。","phase":null}
+{"timestamp":"2026-11-26T00:08:00Z","session_id":"planning","speaker":"human","message":"定型承認です。","phase":null}
+{"timestamp":"2026-11-26T00:09:00Z","session_id":"planning","speaker":"codex","message":"記録しました。","phase":null}
+{"timestamp":"2026-11-26T00:10:00Z","session_id":"planning","speaker":"human","message":"定型承認です。","phase":null}

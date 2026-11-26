@@ -1,0 +1,67 @@
+{
+  "completion": {
+    "status": "incomplete",
+    "reasons": [
+      "invalid JSONL was supplied for one target",
+      "child analysis failed for planning lines 8-11"
+    ],
+    "invalid_jsonl_is_complete": false,
+    "partial_child_failure_is_complete": false
+  },
+  "context_compression": {
+    "status": "unknown",
+    "reason": "compression events were not observable in this environment",
+    "blocks_completion_by_itself": false
+  },
+  "semantic_classification": {
+    "correction_intervention": {
+      "machine_candidate_lines": [["synthetic-one.jsonl", 5], ["synthetic-one.jsonl", 7], ["synthetic-two.jsonl", 1], ["synthetic-two.jsonl", 3]],
+      "adopted": [["synthetic-one.jsonl", 5], ["synthetic-two.jsonl", 1], ["synthetic-two.jsonl", 3]],
+      "rejected": [["synthetic-one.jsonl", 7]],
+      "undetermined": []
+    },
+    "confirmation_question": {
+      "machine_candidate_lines": [["synthetic-one.jsonl", 6], ["synthetic-two.jsonl", 4]],
+      "adopted": [["synthetic-two.jsonl", 4]],
+      "rejected": [["synthetic-one.jsonl", 6]],
+      "undetermined": []
+    },
+    "exact_repetition": {
+      "machine_candidate_lines": [["synthetic-one.jsonl", 9], ["synthetic-one.jsonl", 11]],
+      "adopted": [],
+      "rejected": [["synthetic-one.jsonl", 9], ["synthetic-one.jsonl", 11]],
+      "undetermined": []
+    }
+  },
+  "findings": [
+    {
+      "kind": "continue",
+      "title": "具体的な指示、理由付きの方針判断、再利用可能な進め方を示した",
+      "scope": "cross_log",
+      "subject": "human",
+      "evidence": [
+        {"log":"synthetic-one.jsonl","session_id":"planning","line":1,"quote":"実装前に関連コードを調べ、変更案を小さな手順に分けてください。"},
+        {"log":"synthetic-one.jsonl","session_id":"planning","line":3,"quote":"方針はA案にします。理由は既存の保存形式を維持できるためです。"},
+        {"log":"synthetic-two.jsonl","session_id":"implementation","line":5,"quote":"同じ検証手順はSkillへ残し、次回も再利用できるようにしてください。"}
+      ]
+    },
+    {
+      "kind": "improve",
+      "title": "同じ安定制約を複数回伝える必要がある",
+      "scope": "cross_log",
+      "subject": "human",
+      "evidence": [
+        {"log":"synthetic-one.jsonl","session_id":"planning","line":5,"quote":"変更後はfocused testと全テストを実行し、結果をTODOへ記録してください。docs/audit/kaizen-72.jsonlは変更しないでください。"},
+        {"log":"synthetic-two.jsonl","session_id":"implementation","line":1,"quote":"docs/audit/kaizen-72.jsonlは変更しないでください。"},
+        {"log":"synthetic-two.jsonl","session_id":"implementation","line":3,"quote":"テスト後にdocs/audit/kaizen-72.jsonlは変更しないでください。"}
+      ],
+      "practice": {
+        "id": "PRACTICE-008",
+        "official_statement": "繰り返す安定した制約は再利用可能な指示へ移すことが推奨される。",
+        "log_inference": "同じ対象への制約が言い換えて再提示されたため、再利用可能な指示の候補として調べる。",
+        "applicability": "複数セッションで再発する安定した規約またはワークフロー。",
+        "unknown_conditions": "既存の指示ファイルに同じ制約があるか、今回だけの意図的な再確認かはログだけでは不明。"
+      }
+    }
+  ]
+}
