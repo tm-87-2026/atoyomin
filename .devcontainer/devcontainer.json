@@ -7,7 +7,14 @@
   "remoteUser": "node",
   "workspaceFolder": "/workspaces/atoyomin",
   "features": {
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "username": "node",
+      "installZsh": false,
+      "installOhMyZsh": false,
+      "upgradePackages": false
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:4": {}
   },
   "forwardPorts": [
     5173
@@ -27,7 +34,8 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "openai.chatgpt@26.1007.21434",
-        "ms-azuretools.vscode-containers"
+        "ms-azuretools.vscode-containers",
+        "shd101wyy.markdown-preview-enhanced"
       ],
       "settings": {
         "editor.formatOnSave": true,

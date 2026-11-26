@@ -1,0 +1,3 @@
+[submodule "references/bulletproof-react"]
+	path = references/bulletproof-react
+	url = https://github.com/alan2207/bulletproof-react.git
