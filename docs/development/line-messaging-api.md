@@ -31,7 +31,7 @@
 
 ## ローカルで検証する
 
-[Dev Container](../../.devcontainer/Dockerfile)にDeno 2.5.6を固定しています。設定変更後はコンテナを再構築し、`deno --version`で確認します。関数と補助スクリプトはDenoでチェックし、ブラウザ向けESLintの範囲から分離しています。外部パッケージやLINE SDKは使いません。
+Denoは開発コンテナに含まれません。[インストール手順](https://docs.deno.com/runtime/getting_started/installation/)を参照してDeno 2.5.6を別途用意し、`deno --version`で確認します。関数と補助スクリプトはDenoでチェックし、ブラウザ向けESLintの範囲から分離しています。外部パッケージやLINE SDKは使いません。
 
 ```sh
 pnpm install --frozen-lockfile
@@ -48,7 +48,7 @@ pnpm build
 
 今回はローカルDocker環境の整備が難航したため、2026-11-18の合意により、ローカルSupabase起動・HTTP経路は未実施として記録します。上記チェック後、設定前条件を満たして開発用Supabaseへデプロイし、公開URLの署名試験・Verify・実LINE受信返信を直接確認します。Docker互換性の成功は主張しません。
 
-以下はローカルSupabaseを別途確認する場合の手順であり、今回のデプロイの前提にはしません。ホストのDocker Desktopなどを起動し、Docker-in-Docker Featureを含むDev Containerを再構築します。このFeatureはコンテナ内に独立したDockerデーモンを用意し、Supabaseが関数ファイルをマウントできるようにします。`node`ユーザーでの起動時に必要なsudoを用意するため、common-utils Featureも設定しています。Zsh・Oh My Zsh・既存パッケージの更新は無効です。ホストがこのFeatureの必要な権限を許容する環境で、Dev Container内の`docker version`がクライアント・サーバー両方を返すことを確認します。ランタイムへ接続できなければローカル確認を止め、未実施として記録します。
+以下はDockerを利用できる別環境でローカルSupabaseを確認する場合の手順です。今回のデプロイの前提ではありません。開発コンテナにはDockerデーモンを設定していません。
 
 ```sh
 pnpm supabase start
@@ -157,5 +157,4 @@ bash tools/line/check-webhook.sh https://<project-ref>.supabase.co/functions/v1/
 - [LINEの開始手順](https://developers.line.biz/en/docs/messaging-api/getting-started/)・[Reply API](https://developers.line.biz/en/reference/messaging-api/#send-reply-message)
 - [Supabase外部Webhook認証](https://supabase.com/docs/guides/functions/auth#external-webhooks)・[Secrets](https://supabase.com/docs/guides/functions/secrets)
 - [Supabase CLI](https://supabase.com/docs/reference/cli/supabase-functions-deploy)・[関数テスト](https://supabase.com/docs/guides/functions/unit-test)
-- [Docker-in-Docker Feature](https://github.com/devcontainers/features/tree/main/src/docker-in-docker)・[common-utils Feature設定](https://github.com/devcontainers/features/blob/main/src/common-utils/devcontainer-feature.json)
 - [Denoインストール](https://docs.deno.com/runtime/getting_started/installation/)・[Deno 2.5.6](https://github.com/denoland/deno/releases/tag/v2.5.6)
