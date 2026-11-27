@@ -56,6 +56,9 @@ class HtmlReportTest(unittest.TestCase):
         document = MODULE.render_report(report())
 
         self.assertIn(".charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))", document)
+        self.assertIn("figure{margin:0}", document)
+        self.assertIn(".charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin:.75rem 0}", document)
+        self.assertIn("svg{display:block;width:100%;min-height:0}", document)
         self.assertIn("@media(max-width:760px)", document)
         self.assertIn(".charts{grid-template-columns:1fr}", document)
 
