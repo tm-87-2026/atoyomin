@@ -64,11 +64,32 @@ class HtmlReportTest(unittest.TestCase):
 
     def test_chart_header_rows_do_not_share_the_tick_label_band(self) -> None:
         document = MODULE.render_report(report())
+        sessions = document.split('<h3 id="scale-title">', 1)[1].split("</figure>", 1)[0]
 
         self.assertIn('<rect x="80" y="2" width="14" height="14"/>', document)
         self.assertIn('<text x="480" y="14" text-anchor="end">単位: セッション</text>', document)
-        self.assertIn('<text x="80.0" y="38">0.0</text>', document)
+        self.assertIn('<text x="80.0" y="38">0</text>', sessions)
+        self.assertNotIn('<text x="80.0" y="38">0.0</text>', sessions)
         self.assertNotIn('<rect x="300" y="2" width="14" height="14"/>', document)
+
+    def test_integer_charts_use_integer_125_series_ticks(self) -> None:
+        value = report()
+        value["metrics"] = [
+            {**value["metrics"][0], "id": "one", "label": "A", "sessions": 1, "human_turns": 200, "codex_turns": 200, "rallies": 5},
+            {**value["metrics"][0], "id": "two", "label": "B", "sessions": 4, "human_turns": 200, "codex_turns": 200, "rallies": 53},
+            {**value["metrics"][0], "id": "three", "label": "C", "sessions": 7, "human_turns": 200, "codex_turns": 200, "rallies": 153},
+        ]
+
+        document = MODULE.render_report(value)
+        sessions = document.split('<h3 id="scale-title">', 1)[1].split("</figure>", 1)[0]
+        rallies = document.split('<h3 id="rallies-title">', 1)[1].split("</figure>", 1)[0]
+
+        for tick in ("0", "2", "4", "6", "8"):
+            self.assertIn(f'y="38">{tick}</text>', sessions)
+        for tick in ("0", "50", "100", "150", "200"):
+            self.assertIn(f'y="38">{tick}</text>', rallies)
+        self.assertNotRegex(sessions, r'y="38">\d+\.\d+</text>')
+        self.assertNotRegex(rallies, r'y="38">\d+\.\d+</text>')
 
     def test_chart_axis_starts_close_to_category_labels(self) -> None:
         document = MODULE.render_report(report())

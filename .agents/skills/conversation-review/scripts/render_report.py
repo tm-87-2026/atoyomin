@@ -231,8 +231,23 @@ def _chart_heading(title: str, description: str, chart_id: str) -> str:
     return f'''<div class="chart-title"><h3 id="{chart_id}-title">{_e(title)}</h3><span class="info" tabindex="0" aria-describedby="{tooltip_id}" aria-label="{_e(title)}の説明">i</span><span class="tooltip" id="{tooltip_id}" role="tooltip">{_e(description)}</span></div>'''
 
 
+def _integer_ticks(maximum: int, target_intervals: int = 4) -> tuple[int, list[int]]:
+    """整数値を1・2・5×10^n系列の読みやすい目盛りへ丸める。"""
+
+    maximum = max(maximum, 1)
+    required_step = (maximum + target_intervals - 1) // target_intervals
+    magnitude = 10 ** (len(str(required_step)) - 1)
+    step = next(
+        candidate * magnitude
+        for candidate in (1, 2, 5, 10)
+        if candidate * magnitude >= required_step
+    )
+    axis_maximum = ((maximum + step - 1) // step) * step
+    return axis_maximum, list(range(0, axis_maximum + 1, step))
+
+
 def _bars(title: str, description: str, metrics: list[dict[str, Any]], field: str, unit: str, chart_id: str) -> str:
-    maximum = max((metric[field] for metric in metrics), default=0) or 1
+    maximum, tick_values = _integer_ticks(max((metric[field] for metric in metrics), default=0))
     axis_start = 80
     plot_width = 400
     axis_end = axis_start + plot_width
@@ -242,7 +257,7 @@ def _bars(title: str, description: str, metrics: list[dict[str, Any]], field: st
         width = metric[field] / maximum * plot_width
         rows.append(f'<text x="0" y="{y + 14}">{_e(metric["label"])}</text><rect x="{axis_start}" y="{y}" width="{width:.2f}" height="20" rx="3"/><text x="{axis_start + 5 + width:.2f}" y="{y + 15}">{metric[field]} {_e(unit)}</text>')
     height = 80 + len(metrics) * 38
-    ticks = "".join(f'<g><line x1="{axis_start + i * plot_width / 4}" y1="46" x2="{axis_start + i * plot_width / 4}" y2="{height - 18}"/><text x="{axis_start + i * plot_width / 4}" y="38">{maximum * i / 4:.1f}</text></g>' for i in range(5))
+    ticks = "".join(f'<g><line x1="{axis_start + value / maximum * plot_width}" y1="46" x2="{axis_start + value / maximum * plot_width}" y2="{height - 18}"/><text x="{axis_start + value / maximum * plot_width}" y="38">{value}</text></g>' for value in tick_values)
     table_rows = "".join(f'<tr><th scope="row">{_e(m["label"])}</th><td>{m[field]}</td></tr>' for m in metrics)
     return f'''<figure>{_chart_heading(title, description, chart_id)}<svg viewBox="0 0 560 {height}" role="img" aria-labelledby="{chart_id}-title {chart_id}-desc"><desc id="{chart_id}-desc">{_e(description)}</desc><g class="grid">{ticks}<line class="axis" x1="{axis_start}" y1="46" x2="{axis_start}" y2="{height - 18}"/><line class="axis" x1="{axis_start}" y1="{height - 18}" x2="{axis_end}" y2="{height - 18}"/></g><g class="legend" aria-label="凡例"><rect x="{axis_start}" y="2" width="14" height="14"/><text x="{axis_start + 20}" y="14">{_e(title)}</text></g><g class="bars">{''.join(rows)}</g><text x="{axis_end}" y="14" text-anchor="end">単位: {_e(unit)}</text></svg><figcaption class="sr-only">{_e(description)}</figcaption><table class="sr-only"><caption>{_e(title)}の正確値</caption><thead><tr><th>対象</th><th>{_e(unit)}</th></tr></thead><tbody>{table_rows}</tbody></table></figure>'''
 
