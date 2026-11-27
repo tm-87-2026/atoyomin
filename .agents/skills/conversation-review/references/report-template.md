@@ -1,4 +1,20 @@
-# 会話ログ振り返りレポートのテンプレート
+# 会話ログ振り返りレポートの生成入力
+
+完成レポートは、この資料のMarkdownを複製せず、`scripts/render_report.py` に構造化JSONを渡して自己完結HTMLとして生成する。下部のMarkdownテンプレートは既存レポートを読むための互換資料として残す。
+
+生成入力は次の最上位項目を持つ。
+
+- `title`、`generated_at`、`period`、`summary`: 読者向けの概要。
+- `targets`: `version: 1` と、repository、追跡中の `docs/audit/*.jsonl` path、SHA-256、`matched` または `manual` methodを持つ完成対象。manualにはreasonを付ける。
+- `metrics`: ログごとの一意なidとlabel、sessions、human_turns、codex_turns、rallies、confirmation_adopted、long_sessions、longest_messages、longest_characters、correction_adopted、repetition_adopted。
+- `evidence`: 一意なid、`speaker: human`、log、session_id、line、必要最小限のquote。
+- `findings`: 一意なid、continueまたはimproveのkind、title、observation、interpretation、proposal、scope、`reusable: true`、`actionable: true`、`evidence_complete: true`、claims。各claimは一意なid、text、1件以上の実在するevidence_idsを持つ。improveは `practice_applicable: true` と、id、HTTP/HTTPS url、official_statement、log_inference、applicability、unknown_conditionsを持つpracticeも必要。
+- `actions`: instruction、prior_judgment、intervention、habitのkind、text、確定所見を指すfinding_id。所見も行動も0件を許容する。
+- `limitations`: 不明・未分析・失敗・限界を読者向けに短く示す文字列配列。
+
+人間・ログ・外部資料由来の文字列はすべて通常の文字列値にし、HTML、CSS、SVG断片を入力しない。秘密情報、対象ログ全文、中間分析結果を含めない。生成器は表示値をエスケープし、外部URLをHTTP/HTTPSへ限定し、固定targetsコメント、カード、SVG、閉じた詳細、補助表を同じ入力から作る。出力先は必ず未作成の `.html` パスにする。
+
+## 既存Markdownの互換資料
 
 このテンプレートは、人間の指示、判断、提案した進め方をポイント中心に振り返り、所見から原文へ戻れるようにするために使う。角括弧の説明は保存時に実データへ置き換える。
 
