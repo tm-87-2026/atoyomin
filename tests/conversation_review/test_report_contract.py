@@ -141,6 +141,12 @@ class ReportContractTest(unittest.TestCase):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, actions)
 
+    def test_skill_keeps_branch_list_out_of_report_title(self) -> None:
+        """対象ブランチの列挙をタイトルではなく概要・監査詳細へ置く。"""
+
+        self.assertIn("対象ブランチを列挙しない", self.skill)
+        self.assertIn("対象は概要と監査詳細へ置く", self.skill)
+
 
 if __name__ == "__main__":
     unittest.main()

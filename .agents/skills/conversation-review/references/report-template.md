@@ -4,7 +4,7 @@
 
 生成入力は次の最上位項目を持つ。
 
-- `title`、`generated_at`、`period`、`summary`: 読者向けの概要。
+- `title`、`generated_at`、`period`、`summary`: 読者向けの概要。`title` は日付または期間とレポート目的を簡潔に示し、対象ブランチを列挙しない。
 - `targets`: `version: 1` と、repository、追跡中の `docs/audit/*.jsonl` path、SHA-256、`matched` または `manual` methodを持つ完成対象。manualにはreasonを付ける。
 - `metrics`: ログごとの一意なidとlabel、sessions、human_turns、codex_turns、rallies、confirmation_adopted、long_sessions、longest_messages、longest_characters、correction_adopted、repetition_adopted。
 - `evidence`: 一意なid、`speaker: human`、log、session_id、line、必要最小限のquote。

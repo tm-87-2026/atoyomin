@@ -41,7 +41,7 @@ description: リポジトリのマージ済みブランチの監査ログを手�
 
 ## 保存する
 
-完成レポートは [HTML生成入力](references/report-template.md) に従う構造化JSONを作り、`python3 .agents/skills/conversation-review/scripts/render_report.py render <入力JSON> <新規HTMLパス>` で生成する。検証を回避してHTMLを手書きしない。概要、主要値カード、規模とラリーの単位別パネル、確認質問採用率、長大化、継続すべき点、改善すべき点、次回行動を通常表示する。訂正・介入と反復が全対象0件ならゼロ状態を示す。巨大な詳細表は閉じた `details` に置く。
+完成レポートは [HTML生成入力](references/report-template.md) に従う構造化JSONを作り、`python3 .agents/skills/conversation-review/scripts/render_report.py render <入力JSON> <新規HTMLパス>` で生成する。検証を回避してHTMLを手書きしない。タイトルは実行日または対象期間と「Codex活用振り返り」のようなレポート目的を簡潔に示し、対象ブランチを列挙しない。対象は概要と監査詳細へ置く。概要、主要値カード、規模とラリーの単位別パネル、確認質問採用率、長大化、継続すべき点、改善すべき点、次回行動を通常表示する。訂正・介入と反復が全対象0件ならゼロ状態を示す。巨大な詳細表は閉じた `details` に置く。
 
 構造化入力には対象期間と対象ログを明記する。SVGは軸、目盛り、単位、データラベル、指標名、`figure`、`figcaption`、`role="img"`、`aria-labelledby`、同じ入力から作る補助値を持つ。単位が異なる値を同一軸へ混ぜない。
 
