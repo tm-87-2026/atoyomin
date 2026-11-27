@@ -52,6 +52,22 @@ def report() -> dict:
 
 
 class HtmlReportTest(unittest.TestCase):
+    def test_chart_header_rows_do_not_share_the_tick_label_band(self) -> None:
+        document = MODULE.render_report(report())
+
+        self.assertIn('<rect x="150" y="2" width="14" height="14"/>', document)
+        self.assertIn('<text x="450" y="14" text-anchor="end">単位: セッション</text>', document)
+        self.assertIn('<text x="150" y="38">0.0</text>', document)
+        self.assertNotIn('<rect x="300" y="2" width="14" height="14"/>', document)
+
+    def test_preserves_source_newlines_in_escaped_text_without_splitting_html(self) -> None:
+        data = report()
+        data["evidence"][0]["quote"] = "前半\n後半"
+
+        document = MODULE.render_report(data)
+
+        self.assertIn("<q>前半&#10;後半</q>", document)
+
     def test_renders_real_self_contained_html_from_structured_input(self) -> None:
         document = MODULE.render_report(report())
         self.assertTrue(document.startswith("<!doctype html>"))

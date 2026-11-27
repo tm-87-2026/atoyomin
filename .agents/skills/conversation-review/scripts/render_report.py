@@ -219,7 +219,7 @@ def validate_report(data: Any) -> dict[str, Any]:
 
 
 def _e(value: Any) -> str:
-    return html.escape(str(value), quote=True)
+    return html.escape(str(value), quote=True).replace("\n", "&#10;")
 
 
 def _ratio(numerator: int, denominator: int) -> str:
@@ -230,23 +230,23 @@ def _bars(title: str, description: str, metrics: list[dict[str, Any]], field: st
     maximum = max((metric[field] for metric in metrics), default=0) or 1
     rows = []
     for index, metric in enumerate(metrics):
-        y = 36 + index * 38
+        y = 58 + index * 38
         width = metric[field] / maximum * 300
         rows.append(f'<text x="0" y="{y + 14}">{_e(metric["label"])}</text><rect x="150" y="{y}" width="{width:.2f}" height="20" rx="3"/><text x="{155 + width:.2f}" y="{y + 15}">{metric[field]} {_e(unit)}</text>')
-    height = 58 + len(metrics) * 38
-    ticks = "".join(f'<g><line x1="{150 + i * 75}" y1="24" x2="{150 + i * 75}" y2="{height - 18}"/><text x="{150 + i * 75}" y="16">{maximum * i / 4:.1f}</text></g>' for i in range(5))
+    height = 80 + len(metrics) * 38
+    ticks = "".join(f'<g><line x1="{150 + i * 75}" y1="46" x2="{150 + i * 75}" y2="{height - 18}"/><text x="{150 + i * 75}" y="38">{maximum * i / 4:.1f}</text></g>' for i in range(5))
     table_rows = "".join(f'<tr><th scope="row">{_e(m["label"])}</th><td>{m[field]}</td></tr>' for m in metrics)
-    return f'''<figure><h3 id="{chart_id}-title">{_e(title)}</h3><svg viewBox="0 0 560 {height}" role="img" aria-labelledby="{chart_id}-title {chart_id}-desc"><desc id="{chart_id}-desc">{_e(description)}</desc><g class="grid">{ticks}<line class="axis" x1="150" y1="24" x2="150" y2="{height - 18}"/><line class="axis" x1="150" y1="{height - 18}" x2="450" y2="{height - 18}"/></g><g class="legend" aria-label="凡例"><rect x="300" y="2" width="14" height="14"/><text x="320" y="14">{_e(title)}</text></g><g class="bars">{''.join(rows)}</g><text x="450" y="16">単位: {_e(unit)}</text></svg><figcaption>{_e(description)}</figcaption><table class="sr-only"><caption>{_e(title)}の正確値</caption><thead><tr><th>対象</th><th>{_e(unit)}</th></tr></thead><tbody>{table_rows}</tbody></table></figure>'''
+    return f'''<figure><h3 id="{chart_id}-title">{_e(title)}</h3><svg viewBox="0 0 560 {height}" role="img" aria-labelledby="{chart_id}-title {chart_id}-desc"><desc id="{chart_id}-desc">{_e(description)}</desc><g class="grid">{ticks}<line class="axis" x1="150" y1="46" x2="150" y2="{height - 18}"/><line class="axis" x1="150" y1="{height - 18}" x2="450" y2="{height - 18}"/></g><g class="legend" aria-label="凡例"><rect x="150" y="2" width="14" height="14"/><text x="170" y="14">{_e(title)}</text></g><g class="bars">{''.join(rows)}</g><text x="450" y="14" text-anchor="end">単位: {_e(unit)}</text></svg><figcaption>{_e(description)}</figcaption><table class="sr-only"><caption>{_e(title)}の正確値</caption><thead><tr><th>対象</th><th>{_e(unit)}</th></tr></thead><tbody>{table_rows}</tbody></table></figure>'''
 
 
 def _rates(metrics: list[dict[str, Any]]) -> str:
     available = [metric for metric in metrics if metric["codex_turns"] > 0]
     maximum = max((metric["confirmation_adopted"] / metric["codex_turns"] * 100 for metric in available), default=0) or 100
-    height = 58 + len(metrics) * 38
-    ticks = "".join(f'<g><line x1="{150 + i * 75}" y1="24" x2="{150 + i * 75}" y2="{height - 18}"/><text x="{150 + i * 75}" y="16">{maximum * i / 4:.1f}</text></g>' for i in range(5))
+    height = 80 + len(metrics) * 38
+    ticks = "".join(f'<g><line x1="{150 + i * 75}" y1="46" x2="{150 + i * 75}" y2="{height - 18}"/><text x="{150 + i * 75}" y="38">{maximum * i / 4:.1f}</text></g>' for i in range(5))
     rows = []
     for index, metric in enumerate(metrics):
-        y = 36 + index * 38
+        y = 58 + index * 38
         label = _e(metric["label"])
         if metric["codex_turns"] == 0:
             rows.append(f'<text x="0" y="{y + 14}">{label}</text><text class="unavailable" x="150" y="{y + 14}">取得不能（Codexターン 0）</text>')
@@ -256,7 +256,7 @@ def _rates(metrics: list[dict[str, Any]]) -> str:
         rows.append(f'<text x="0" y="{y + 14}">{label}</text><rect x="150" y="{y}" width="{width:.2f}" height="20" rx="3"/><text x="{155 + width:.2f}" y="{y + 15}">{rate:.1f}%</text>')
     exact = "".join(f'<li>{_e(m["label"])}: {m["confirmation_adopted"]}/{m["codex_turns"]}（{_ratio(m["confirmation_adopted"], m["codex_turns"]) }）</li>' for m in metrics)
     table_rows = "".join(f'<tr><th scope="row">{_e(m["label"])}</th><td>{m["confirmation_adopted"]}</td><td>{m["codex_turns"]}</td><td>{_ratio(m["confirmation_adopted"], m["codex_turns"])}</td></tr>' for m in metrics)
-    return f'''<figure><h3 id="confirmation-title">確認質問の採用率</h3><svg viewBox="0 0 560 {height}" role="img" aria-labelledby="confirmation-title confirmation-desc"><desc id="confirmation-desc">Codexターンを分母にした採用数の割合です。分母が0の対象は取得不能として棒を描画しません。</desc><g class="grid">{ticks}<line class="axis" x1="150" y1="24" x2="150" y2="{height - 18}"/><line class="axis" x1="150" y1="{height - 18}" x2="450" y2="{height - 18}"/></g><g class="legend" aria-label="凡例"><rect x="300" y="2" width="14" height="14"/><text x="320" y="14">確認質問の採用率</text></g><g class="bars">{''.join(rows)}</g><text x="450" y="16">単位: %</text></svg><figcaption>Codexターンを分母にした採用数の割合です。分母0は取得不能として区別します。</figcaption><ul class="exact">{exact}</ul><table class="sr-only"><caption>確認質問の採用率の正確値</caption><thead><tr><th>対象</th><th>採用数</th><th>Codexターン</th><th>採用率</th></tr></thead><tbody>{table_rows}</tbody></table></figure>'''
+    return f'''<figure><h3 id="confirmation-title">確認質問の採用率</h3><svg viewBox="0 0 560 {height}" role="img" aria-labelledby="confirmation-title confirmation-desc"><desc id="confirmation-desc">Codexターンを分母にした採用数の割合です。分母が0の対象は取得不能として棒を描画しません。</desc><g class="grid">{ticks}<line class="axis" x1="150" y1="46" x2="150" y2="{height - 18}"/><line class="axis" x1="150" y1="{height - 18}" x2="450" y2="{height - 18}"/></g><g class="legend" aria-label="凡例"><rect x="150" y="2" width="14" height="14"/><text x="170" y="14">確認質問の採用率</text></g><g class="bars">{''.join(rows)}</g><text x="450" y="14" text-anchor="end">単位: %</text></svg><figcaption>Codexターンを分母にした採用数の割合です。分母0は取得不能として区別します。</figcaption><ul class="exact">{exact}</ul><table class="sr-only"><caption>確認質問の採用率の正確値</caption><thead><tr><th>対象</th><th>採用数</th><th>Codexターン</th><th>採用率</th></tr></thead><tbody>{table_rows}</tbody></table></figure>'''
 
 
 def render_report(data: dict[str, Any]) -> str:
