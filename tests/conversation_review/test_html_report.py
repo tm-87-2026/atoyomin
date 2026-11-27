@@ -78,6 +78,16 @@ class HtmlReportTest(unittest.TestCase):
         self.assertIn('x2="480"', document)
         self.assertNotIn('<line class="axis" x1="150"', document)
 
+    def test_chart_notes_use_hover_and_focus_tooltips(self) -> None:
+        document = MODULE.render_report(report())
+
+        self.assertEqual(document.count('class="info" tabindex="0"'), 4)
+        self.assertEqual(document.count('role="tooltip"'), 4)
+        self.assertIn(".info:hover+.tooltip,.info:focus+.tooltip", document)
+        self.assertIn('<figcaption class="sr-only">', document)
+        self.assertNotIn('<ul class="exact">', document)
+        self.assertIn('<ul class="sr-only">', document)
+
     def test_preserves_source_newlines_in_escaped_text_without_splitting_html(self) -> None:
         data = report()
         data["evidence"][0]["quote"] = "前半\n後半"
@@ -99,7 +109,7 @@ class HtmlReportTest(unittest.TestCase):
         self.assertIn("role=\"img\"", document)
         self.assertIn("aria-labelledby=", document)
         self.assertIn("<figure>", document)
-        self.assertIn("<figcaption>", document)
+        self.assertIn('<figcaption class="sr-only">', document)
         self.assertIn("単位: セッション", document)
         self.assertIn(">2/8 (25.0%)<", document)
         self.assertIn("訂正・介入と反復は、全対象で0件", document)
