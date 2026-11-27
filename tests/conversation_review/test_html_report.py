@@ -65,10 +65,18 @@ class HtmlReportTest(unittest.TestCase):
     def test_chart_header_rows_do_not_share_the_tick_label_band(self) -> None:
         document = MODULE.render_report(report())
 
-        self.assertIn('<rect x="150" y="2" width="14" height="14"/>', document)
-        self.assertIn('<text x="450" y="14" text-anchor="end">単位: セッション</text>', document)
-        self.assertIn('<text x="150" y="38">0.0</text>', document)
+        self.assertIn('<rect x="80" y="2" width="14" height="14"/>', document)
+        self.assertIn('<text x="480" y="14" text-anchor="end">単位: セッション</text>', document)
+        self.assertIn('<text x="80.0" y="38">0.0</text>', document)
         self.assertNotIn('<rect x="300" y="2" width="14" height="14"/>', document)
+
+    def test_chart_axis_starts_close_to_category_labels(self) -> None:
+        document = MODULE.render_report(report())
+
+        self.assertIn('<line class="axis" x1="80" y1="46" x2="80"', document)
+        self.assertIn('<line class="axis" x1="80"', document)
+        self.assertIn('x2="480"', document)
+        self.assertNotIn('<line class="axis" x1="150"', document)
 
     def test_preserves_source_newlines_in_escaped_text_without_splitting_html(self) -> None:
         data = report()
