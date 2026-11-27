@@ -52,6 +52,13 @@ def report() -> dict:
 
 
 class HtmlReportTest(unittest.TestCase):
+    def test_charts_use_two_columns_and_collapse_to_one_on_narrow_screens(self) -> None:
+        document = MODULE.render_report(report())
+
+        self.assertIn(".charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))", document)
+        self.assertIn("@media(max-width:760px)", document)
+        self.assertIn(".charts{grid-template-columns:1fr}", document)
+
     def test_chart_header_rows_do_not_share_the_tick_label_band(self) -> None:
         document = MODULE.render_report(report())
 
